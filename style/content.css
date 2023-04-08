@@ -1,0 +1,29 @@
+#injected-looper-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 60px;
+    position: relative;
+    font-family: "Open Sans", sans-serif;
+}
+
+#injected-looper-container > * {
+    margin: 0px 10px;
+}
+
+#injected-loop-count {
+    outline: none;
+    border: none;
+    width: 60px;
+    height: 20px;
+    border-radius: 5px;
+}
+
+#injected-loop-counter {
+    font-size: 20px;
+}
+
+#injected-looper-loop-symbol {
+    height: 26px;
+    width: 28px;
+}
