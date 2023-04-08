@@ -24,6 +24,7 @@ let loop = false;
     
     // wait until element to inject is loaded
     helpers.waitforelement("#above-the-fold", 4000).then((nodes) => {
+        // element to inject into
         let abovefold = nodes[0];
         
         // inject html src as element
@@ -45,7 +46,7 @@ let loop = false;
             try {
                 loopedcount = Number(content);
             } catch (e) {
-                // do nothing
+                loopedcount = 0;
             }
         })
         
@@ -54,24 +55,37 @@ let loop = false;
             helpers.waitforelement("#movie_player > div.html5-video-container.style-scope.ytd-player > video").then((nodes) => {
                 let videoel = nodes[0];
                 if(!loop){
+                    // enable loop
                     loopsvgel.src = loopsvgtrue;
                     loop = true;
-                    videoel.addEventListener("ended", (ev) => {
+                    videoel.addEventListener("ended", function videoended(ev) {
+                        // increase looped count
                         loopedcounter++;
                         loopcounterel.textContent = `${loopedcounter} Times Looped`;
                         if(loopedcount !== 0){
                             if(loopedcounter >= loopedcount){
+                                // remove loop for next video
                                 loop = false;
-                                loopedcounter = 0;
+                                videoel.removeEventListener("ended", videoended);
+                                // reset values and ui
+                                loopsvgel.src = loopsvgfalse;
+                                loopcountel.value = "";
                                 loopedcount = 0;
+                                loopedcounter = 0;
+                                loopcounterel.textContent = `${loopedcounter} Times Looped`;
+                            } else {
+                                // replay
+                                videoel.currentTime = 0;
                             }
                         } else {
-                            console.log("seek")
+                            // replay
                             videoel.currentTime = 0;
                         }
                     });
                 } else {
+                    // disable loop
                     loop = false;
+                    videoel.removeEventListener("ended", videoended);
                     loopsvgel.src = loopsvgfalse;
                 }
             })
