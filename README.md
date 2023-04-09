@@ -1,6 +1,6 @@
 # Youtube Looper Extension
 
-A chrome extension (may work in firefox) to loop youtube videos inside the browser (on the official youtube webpage).
+A chrome extension to loop youtube videos inside the browser (on the official youtube webpage).
 It's possible to specify how often the video should be looped. Note that the times looped don't
 reset when the max loop count is adjusted.
 
