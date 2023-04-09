@@ -1,6 +1,11 @@
 let loopedcounter = 0;
 let loopedcount = 0;
 let loop = false;
+// elements will be initialised when looped, global so eventlistener of ended
+// event on video can access them
+let loopsvgel;
+let loopcounterel;
+let loopcountel;
 
 // asynchronously import modules
 (async () => {
@@ -33,14 +38,14 @@ let loop = false;
         abovefold.children[abovefold.children.length - 1].before(el);
         
         // inject img src
-        let loopsvgel = document.getElementById("injected-looper-loop-symbol");
+        loopsvgel = document.getElementById("injected-looper-loop-symbol");
         loopsvgel.src = loopsvgfalse;
         
         // loop counter display
-        let loopcounterel = document.getElementById("injected-loop-counter");
+        loopcounterel = document.getElementById("injected-loop-counter");
         
         // loop count input
-        let loopcountel = document.getElementById("injected-loop-count");
+        loopcountel = document.getElementById("injected-loop-count");
         loopcountel.addEventListener("input", (ev) => {
             let content = ev.target.value;
             try {
@@ -50,22 +55,36 @@ let loop = false;
             }
         })
         
-        // attach event listeners to loaded elements
+        // attach event listeners to loop button elements
         loopsvgel.addEventListener("click", () => {
-            // path may need adjusting in the future when things change
-            helpers.waitforelement("#movie_player > div.html5-video-container.style-scope.ytd-player > video").then((nodes) => {
-                // video element from yt
-                let videoel = nodes[0];
-                // event listener function variable
-                const videoended = (ev) => {
-                    // increase looped count
-                    loopedcounter++;
-                    loopcounterel.textContent = `${loopedcounter} Times Looped`;
+            // check what to do on click
+            if(!loop){
+                // enable loop
+                loop = true;
+                loopsvgel.src = loopsvgtrue;
+            } else {
+                // disable loop
+                loop = false;
+                loopsvgel.src = loopsvgfalse;
+            }
+        });
+
+        // attach eventlistener to video element
+        // path may need adjusting in the future when things change
+        helpers.waitforelement("#movie_player > div.html5-video-container.style-scope.ytd-player > video").then((nodes) => {
+            // video element from yt
+            let videoel = nodes[0];
+
+            videoel.addEventListener("ended", (ev) => {
+                // increase looped count
+                loopedcounter++;
+                loopcounterel.textContent = `${loopedcounter} Times Looped`;
+                console.log(loopedcounter, loopedcount, loop);
+                if(loop){
                     if(loopedcount !== 0){
                         if(loopedcounter >= loopedcount){
                             // remove loop for next video
                             loop = false;
-                            videoel.removeEventListener("ended", videoended);
                             // reset values and ui
                             loopsvgel.src = loopsvgfalse;
                             loopcountel.value = "";
@@ -80,20 +99,15 @@ let loop = false;
                         // replay
                         videoel.currentTime = 0;
                     }
-                };
-                // check what to do on click
-                if(!loop){
-                    // enable loop
-                    loop = true;
-                    loopsvgel.src = loopsvgtrue;
-                    videoel.addEventListener("ended", videoended);
                 } else {
-                    // disable loop
-                    loop = false;
+                    // reset values and ui
                     loopsvgel.src = loopsvgfalse;
-                    videoel.removeEventListener("ended", videoended);
+                    loopcountel.value = "";
+                    loopedcount = 0;
+                    loopedcounter = 0;
+                    loopcounterel.textContent = `${loopedcounter} Times Looped`;
                 }
             })
-        })
+        });
     });
 })();
