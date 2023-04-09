@@ -10,6 +10,8 @@ reset when the max loop count is adjusted.
 2. Open your browser, go to `chrome://extensions`, enable developer mode.
 3. Click on "Load Unpacked" an chose the location of the previousl cloned repository.
 4. Open Youtube and enjoy your experience.
+5. As this repository will get updated, you may need to sync your git repository or download the files
+and load the extension again
 
 # Issues and Bug Reporting
 
