@@ -96,7 +96,10 @@ let loopcountel;
                 // prevent yt listener from executing, important only when video is part of a playlist
                 // because of this we can't use the 'ended' event
                 // ev.stopImmediatePropagation() also does not work, as the yt listener was added prior to our listener
-                if(videoel.currentTime > videoel.duration * 0.99){
+                // trigger 0.5 second before end, can't make time interval to short, wouldn't trigger elsewise
+                // https://stackoverflow.com/questions/9678177/how-often-does-the-timeupdate-event-fire-for-an-html5-video
+                // maybe hybrid solution with both ended and timeupdate for playlists
+                if(videoel.currentTime > videoel.duration - 0.5){
                     // increase looped count
                     loopedcounter++;
                     loopcounterel.textContent = `${loopedcounter} Times Looped`;
