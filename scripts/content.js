@@ -52,41 +52,46 @@ let loop = false;
         
         // attach event listeners to loaded elements
         loopsvgel.addEventListener("click", () => {
+            // path may need adjusting in the future when things change
             helpers.waitforelement("#movie_player > div.html5-video-container.style-scope.ytd-player > video").then((nodes) => {
+                // video element from yt
                 let videoel = nodes[0];
-                if(!loop){
-                    // enable loop
-                    loopsvgel.src = loopsvgtrue;
-                    loop = true;
-                    videoel.addEventListener("ended", function videoended(ev) {
-                        // increase looped count
-                        loopedcounter++;
-                        loopcounterel.textContent = `${loopedcounter} Times Looped`;
-                        if(loopedcount !== 0){
-                            if(loopedcounter >= loopedcount){
-                                // remove loop for next video
-                                loop = false;
-                                videoel.removeEventListener("ended", videoended);
-                                // reset values and ui
-                                loopsvgel.src = loopsvgfalse;
-                                loopcountel.value = "";
-                                loopedcount = 0;
-                                loopedcounter = 0;
-                                loopcounterel.textContent = `${loopedcounter} Times Looped`;
-                            } else {
-                                // replay
-                                videoel.currentTime = 0;
-                            }
+                // event listener function variable
+                const videoended = (ev) => {
+                    // increase looped count
+                    loopedcounter++;
+                    loopcounterel.textContent = `${loopedcounter} Times Looped`;
+                    if(loopedcount !== 0){
+                        if(loopedcounter >= loopedcount){
+                            // remove loop for next video
+                            loop = false;
+                            videoel.removeEventListener("ended", videoended);
+                            // reset values and ui
+                            loopsvgel.src = loopsvgfalse;
+                            loopcountel.value = "";
+                            loopedcount = 0;
+                            loopedcounter = 0;
+                            loopcounterel.textContent = `${loopedcounter} Times Looped`;
                         } else {
                             // replay
                             videoel.currentTime = 0;
                         }
-                    });
+                    } else {
+                        // replay
+                        videoel.currentTime = 0;
+                    }
+                };
+                // check what to do on click
+                if(!loop){
+                    // enable loop
+                    loop = true;
+                    loopsvgel.src = loopsvgtrue;
+                    videoel.addEventListener("ended", videoended);
                 } else {
                     // disable loop
                     loop = false;
-                    videoel.removeEventListener("ended", videoended);
                     loopsvgel.src = loopsvgfalse;
+                    videoel.removeEventListener("ended", videoended);
                 }
             })
         })
