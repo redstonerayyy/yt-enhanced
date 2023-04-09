@@ -6,6 +6,17 @@ let loop = false;
 let loopsvgel;
 let loopcounterel;
 let loopcountel;
+let loopsvgtrue;
+let loopsvgfalse;
+
+const reset = () => {
+    // reset values and ui
+    loopsvgel.src = loopsvgfalse;
+    loopcountel.value = "";
+    loopedcount = 0;
+    loopedcounter = 0;
+    loopcounterel.textContent = `${loopedcounter} Times Looped`;
+}
 
 // asynchronously import modules
 (async () => {
@@ -20,8 +31,8 @@ let loopcountel;
     }
     
     // get img sources
-    let loopsvgfalse = chrome.runtime.getURL("images/noloop.svg");
-    let loopsvgtrue = chrome.runtime.getURL("images/yesloop.svg");
+    loopsvgfalse = chrome.runtime.getURL("images/noloop.svg");
+    loopsvgtrue = chrome.runtime.getURL("images/yesloop.svg");
     
     // get helper functions, module workaround
     const modulesrc = chrome.runtime.getURL("scripts/helpers.js");
@@ -69,28 +80,19 @@ let loopcountel;
             }
         });
 
+        // reset loop when video changes, listen to navigate events in background.js
+        chrome.runtime.onMessage.addListener((request, sender, sendresponse) => {
+            if(request.navigation){
+                loop = false;
+                reset();
+            }
+        });
+
         // attach eventlistener to video element
         // path may need adjusting in the future when things change
         helpers.waitforelement("#movie_player > div.html5-video-container.style-scope.ytd-player > video").then((nodes) => {
             // video element from yt
             let videoel = nodes[0];
-
-            const observer = new MutationObserver((mutationlist)=>{
-                for (const mutation of mutationlist) {
-                    if (mutation.type === "childList") {
-                        console.log("A child node has been added or removed.");
-                    } else if (mutation.type === "attributes") {
-                        console.log(`The ${mutation.attributeName} attribute was modified, previously it was ${mutation.oldValue}`);
-                    }
-                }
-            });
-
-            observer.observe(videoel, {
-                childList: true,
-                subtree: true,
-                attributes: true,
-                attributeOldValue: true,
-            });
 
             videoel.addEventListener("timeupdate", (ev) => {
                 // prevent yt listener from executing, important only when video is part of a playlist
@@ -103,18 +105,13 @@ let loopcountel;
                     // increase looped count
                     loopedcounter++;
                     loopcounterel.textContent = `${loopedcounter} Times Looped`;
-                    console.log(loop);
                     if(loop){
                         if(loopedcount !== 0){
                             if(loopedcounter >= loopedcount){
                                 // remove loop for next video
                                 loop = false;
-                                // reset values and ui
-                                loopsvgel.src = loopsvgfalse;
-                                loopcountel.value = "";
-                                loopedcount = 0;
-                                loopedcounter = 0;
-                                loopcounterel.textContent = `${loopedcounter} Times Looped`;
+                                console.log("order");
+                                reset();
                             } else {
                                 // replay
                                 videoel.currentTime = 0;
@@ -124,14 +121,8 @@ let loopcountel;
                             videoel.currentTime = 0;
                         }
                     } else {
-                        // reset values and ui
-                        loopsvgel.src = loopsvgfalse;
-                        loopcountel.value = "";
-                        loopedcount = 0;
-                        loopedcounter = 0;
-                        loopcounterel.textContent = `${loopedcounter} Times Looped`;
+                        reset();
                     }
-                    console.log(loop);
                 }
             })
         });
