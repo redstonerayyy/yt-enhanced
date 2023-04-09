@@ -75,37 +75,60 @@ let loopcountel;
             // video element from yt
             let videoel = nodes[0];
 
-            videoel.addEventListener("ended", (ev) => {
-                // increase looped count
-                loopedcounter++;
-                loopcounterel.textContent = `${loopedcounter} Times Looped`;
-                console.log(loopedcounter, loopedcount, loop);
-                if(loop){
-                    if(loopedcount !== 0){
-                        if(loopedcounter >= loopedcount){
-                            // remove loop for next video
-                            loop = false;
-                            // reset values and ui
-                            loopsvgel.src = loopsvgfalse;
-                            loopcountel.value = "";
-                            loopedcount = 0;
-                            loopedcounter = 0;
-                            loopcounterel.textContent = `${loopedcounter} Times Looped`;
+            const observer = new MutationObserver((mutationlist)=>{
+                for (const mutation of mutationlist) {
+                    if (mutation.type === "childList") {
+                        console.log("A child node has been added or removed.");
+                    } else if (mutation.type === "attributes") {
+                        console.log(`The ${mutation.attributeName} attribute was modified, previously it was ${mutation.oldValue}`);
+                    }
+                }
+            });
+
+            observer.observe(videoel, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeOldValue: true,
+            });
+
+            videoel.addEventListener("timeupdate", (ev) => {
+                // prevent yt listener from executing, important only when video is part of a playlist
+                // because of this we can't use the 'ended' event
+                // ev.stopImmediatePropagation() also does not work, as the yt listener was added prior to our listener
+                if(videoel.currentTime > videoel.duration * 0.99){
+                    // increase looped count
+                    loopedcounter++;
+                    loopcounterel.textContent = `${loopedcounter} Times Looped`;
+                    console.log(loop);
+                    if(loop){
+                        if(loopedcount !== 0){
+                            if(loopedcounter >= loopedcount){
+                                // remove loop for next video
+                                loop = false;
+                                // reset values and ui
+                                loopsvgel.src = loopsvgfalse;
+                                loopcountel.value = "";
+                                loopedcount = 0;
+                                loopedcounter = 0;
+                                loopcounterel.textContent = `${loopedcounter} Times Looped`;
+                            } else {
+                                // replay
+                                videoel.currentTime = 0;
+                            }
                         } else {
                             // replay
                             videoel.currentTime = 0;
                         }
                     } else {
-                        // replay
-                        videoel.currentTime = 0;
+                        // reset values and ui
+                        loopsvgel.src = loopsvgfalse;
+                        loopcountel.value = "";
+                        loopedcount = 0;
+                        loopedcounter = 0;
+                        loopcounterel.textContent = `${loopedcounter} Times Looped`;
                     }
-                } else {
-                    // reset values and ui
-                    loopsvgel.src = loopsvgfalse;
-                    loopcountel.value = "";
-                    loopedcount = 0;
-                    loopedcounter = 0;
-                    loopcounterel.textContent = `${loopedcounter} Times Looped`;
+                    console.log(loop);
                 }
             })
         });
