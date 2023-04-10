@@ -90,7 +90,7 @@ const reset = () => {
 
         // attach eventlistener to video element
         // path may need adjusting in the future when things change
-        helpers.waitforelement("#movie_player > div.html5-video-container.style-scope.ytd-player > video").then((nodes) => {
+        helpers.waitforelement("#movie_player > div.html5-video-container > video").then((nodes) => {
             // video element from yt
             let videoel = nodes[0];
 

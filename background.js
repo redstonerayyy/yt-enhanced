@@ -1,8 +1,8 @@
 // send message to tab if YT url changes
-chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
+chrome.webNavigation.onHistoryStateUpdated.addListener( async (details) => {
     if(details.url.includes("https://www.youtube.com/watch")){
         try {
-            chrome.tabs.sendMessage(details.tabId, { navigation: true });
+            await chrome.tabs.sendMessage(details.tabId, { navigation: true });
         } catch (e) {
             // do nothing
         }
