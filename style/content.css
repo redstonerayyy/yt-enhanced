@@ -11,7 +11,7 @@
     margin: 0px 10px;
 }
 
-#injected-loop-count {
+#injected-loop-maximum-input {
     outline: none;
     border: none;
     width: 60px;
@@ -23,7 +23,7 @@
     font-size: 20px;
 }
 
-#injected-looper-loop-symbol {
+#injected-loop-state-image {
     height: 26px;
     width: 28px;
 }
