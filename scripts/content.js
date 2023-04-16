@@ -1,130 +1,201 @@
-let loopedcounter = 0;
-let loopedcount = 0;
-let loop = false;
-// elements will be initialised when looped, global so eventlistener of ended
-// event on video can access them
-let loopsvgel;
-let loopcounterel;
-let loopcountel;
-let loopsvgtrue;
-let loopsvgfalse;
+/* ------------------------------------------------
+                    EXTENSION STATE
+ -------------------------------------------------*/
 
-const reset = () => {
-    // reset values and ui
-    loopsvgel.src = loopsvgfalse;
-    loopcountel.value = "";
-    loopedcount = 0;
-    loopedcounter = 0;
-    loopcounterel.textContent = `${loopedcounter} Times Looped`;
+const APPSTATE = {
+	loopcount: 0,
+	loopmax: 0,
+	loop: false,
+};
+
+const UIELEMENTS = {
+	injecttarget: null,
+	loopmaxinput: null,
+	loopcounterspan: null,
+	loopstateimg: null,
+	ytvideoelement: null,
+};
+
+const RESOURCES = {
+	htmlurlsrc: null,
+	htmlinjectsrc: null,
+	noloopsvg: null,
+	yesloopsvg: null,
+};
+
+/* ------------------------------------------------
+                    RESSOURCES
+ -------------------------------------------------*/
+
+async function xmlgetrequest(url) {
+	return new Promise((resolve, reject) => {
+		let xhr = new XMLHttpRequest();
+		xhr.open("GET", url);
+
+		xhr.onload = () => {
+			resolve(xhr.response);
+		};
+		xhr.onerror = () => {
+			reject("");
+		};
+
+		xhr.send();
+	});
 }
 
-// asynchronously import modules
+async function load_resources() {
+	// get resource urls
+	RESOURCES.htmlurlsrc = chrome.runtime.getURL("resources/looper.html");
+	RESOURCES.htmlinjectsrc = await xmlgetrequest(RESOURCES.htmlurlsrc);
+	RESOURCES.noloopsvg = chrome.runtime.getURL("images/noloop.svg");
+	RESOURCES.yesloopsvg = chrome.runtime.getURL("images/yesloop.svg");
+}
+
+/* ------------------------------------------------
+                    DOM MANIPUlATION
+ -------------------------------------------------*/
+
+// https://stackoverflow.com/questions/34863788/how-to-check-if-an-element-has-been-loaded-on-a-page-before-running-a-script
+// makes it possible to wait for the load of a DOM element
+function waitforelement(queryselector) {
+	return new Promise((resolve, reject) => {
+		let nodes = document.querySelectorAll(queryselector);
+		if (nodes.length) return resolve(nodes);
+
+		let timer;
+
+		const observer = new MutationObserver(() => {
+			let nodes = document.querySelectorAll(queryselector);
+			if (nodes.length) {
+				observer.disconnect();
+				clearTimeout(timer);
+				return resolve(nodes);
+			}
+		});
+
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true,
+		});
+	});
+}
+
+function create_inject_element() {
+	let controls = document.createElement("div");
+	controls.innerHTML = RESOURCES.htmlinjectsrc;
+	controls.querySelector("#injected-loop-state-image").src =
+		RESOURCES.noloopsvg;
+	return controls;
+}
+
+function loop_reset() {
+	APPSTATE.loop = false;
+	APPSTATE.loopmax = 0;
+	APPSTATE.loopcount = 0;
+	UIELEMENTS.loopstateimg.src = RESOURCES.noloopsvg;
+	UIELEMENTS.loopcounterspan.textContent = `${0} Times Looped`;
+	UIELEMENTS.loopmaxinput.value = "";
+}
+
+/* ------------------------------------------------
+                    MAIN CODE
+ -------------------------------------------------*/
+
 (async () => {
-    // get html source for injection
-    const htmlsrcurl = chrome.runtime.getURL("resources/looper.html");
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", htmlsrcurl);
-    xhr.send()
-    let htmlsrc;
-    xhr.onload = () => {
-        htmlsrc = xhr.response;
-    }
-    
-    // get img sources
-    loopsvgfalse = chrome.runtime.getURL("images/noloop.svg");
-    loopsvgtrue = chrome.runtime.getURL("images/yesloop.svg");
-    
-    // get helper functions, module workaround
-    const modulesrc = chrome.runtime.getURL("scripts/helpers.js");
-    const helpers = await import(modulesrc);
-    
-    // wait until element to inject is loaded
-    helpers.waitforelement("#above-the-fold", 4000).then((nodes) => {
-        // element to inject into
-        let abovefold = nodes[0];
-        
-        // inject html src as element
-        let el = document.createElement("div");
-        el.innerHTML = htmlsrc;
-        abovefold.children[abovefold.children.length - 1].before(el);
-        
-        // inject img src
-        loopsvgel = document.getElementById("injected-looper-loop-symbol");
-        loopsvgel.src = loopsvgfalse;
-        
-        // loop counter display
-        loopcounterel = document.getElementById("injected-loop-counter");
-        
-        // loop count input
-        loopcountel = document.getElementById("injected-loop-count");
-        loopcountel.addEventListener("input", (ev) => {
-            let content = ev.target.value;
-            try {
-                loopedcount = Number(content);
-            } catch (e) {
-                loopedcount = 0;
-            }
-        })
-        
-        // attach event listeners to loop button elements
-        loopsvgel.addEventListener("click", () => {
-            // check what to do on click
-            if(!loop){
-                // enable loop
-                loop = true;
-                loopsvgel.src = loopsvgtrue;
-            } else {
-                // disable loop
-                loop = false;
-                loopsvgel.src = loopsvgfalse;
-            }
-        });
+	/*--------------------- Load Resources ---------------------*/
+	console.log("YT Enhanced: Loading Resources");
+	await load_resources();
 
-        // reset loop when video changes, listen to navigate events in background.js
-        chrome.runtime.onMessage.addListener((request, sender, sendresponse) => {
-            if(request.navigation){
-                loop = false;
-                reset();
-            }
-        });
+	/*--------------------- Wait for Inject Target Element ---------------------*/
+	console.log("YT Enhanced: Awaiting Injection");
+	UIELEMENTS.injecttarget = (await waitforelement("#above-the-fold"))[0];
+	console.log(UIELEMENTS.injecttarget);
 
-        // attach eventlistener to video element
-        // path may need adjusting in the future when things change
-        helpers.waitforelement("#movie_player > div.html5-video-container > video").then((nodes) => {
-            // video element from yt
-            let videoel = nodes[0];
+	/*--------------------- Inject Controls ---------------------*/
+	UIELEMENTS.injecttarget.children[
+		UIELEMENTS.injecttarget.children.length - 1
+	].before(create_inject_element());
 
-            videoel.addEventListener("timeupdate", (ev) => {
-                // prevent yt listener from executing, important only when video is part of a playlist
-                // because of this we can't use the 'ended' event
-                // ev.stopImmediatePropagation() also does not work, as the yt listener was added prior to our listener
-                // trigger 0.5 second before end, can't make time interval to short, wouldn't trigger elsewise
-                // https://stackoverflow.com/questions/9678177/how-often-does-the-timeupdate-event-fire-for-an-html5-video
-                // maybe hybrid solution with both ended and timeupdate for playlists
-                if(videoel.currentTime > videoel.duration - 0.5){
-                    // increase looped count
-                    loopedcounter++;
-                    loopcounterel.textContent = `${loopedcounter} Times Looped`;
-                    if(loop){
-                        if(loopedcount !== 0){
-                            if(loopedcounter >= loopedcount){
-                                // remove loop for next video
-                                loop = false;
-                                console.log("order");
-                                reset();
-                            } else {
-                                // replay
-                                videoel.currentTime = 0;
-                            }
-                        } else {
-                            // replay
-                            videoel.currentTime = 0;
-                        }
-                    } else {
-                        reset();
-                    }
-                }
-            })
-        });
-    });
+	/*--------------------- Grap References ---------------------*/
+	UIELEMENTS.loopstateimg = document.getElementById(
+		"injected-loop-state-image"
+	);
+	UIELEMENTS.loopcounterspan = document.getElementById(
+		"injected-loop-counter"
+	);
+	UIELEMENTS.loopmaxinput = document.getElementById(
+		"injected-loop-maximum-input"
+	);
+
+	/*--------------------- Add Event Listeners to Controls ---------------------*/
+	// change loop maximum when input value is changed
+	UIELEMENTS.loopmaxinput.addEventListener("input", (ev) => {
+		let value = ev.target.value;
+		try {
+			APPSTATE.loopmax = Number(value);
+		} catch (e) {
+			APPSTATE.loopmax = 0;
+		}
+	});
+
+	// toggle loop if the image is clicked
+	UIELEMENTS.loopstateimg.addEventListener("click", () => {
+		if (!APPSTATE.loop) {
+			APPSTATE.loop = true;
+			UIELEMENTS.loopstateimg.src = RESOURCES.yesloopsvg;
+		} else {
+			APPSTATE.loop = false;
+			UIELEMENTS.loopstateimg.src = RESOURCES.noloopsvg;
+		}
+	});
+
+	// reset loop when video changes, listen to navigate events in background.js
+	chrome.runtime.onMessage.addListener((request) => {
+		if (request.navigation) {
+			APPSTATE.loop = false;
+			loop_reset();
+		}
+	});
+
+	/*--------------------- Wait for YT Video Player ---------------------*/
+	console.log("YT Enhanced: Awaiting Videoplayer");
+	UIELEMENTS.ytvideoelement = (
+		await waitforelement(
+			"#movie_player > div.html5-video-container > video"
+		)
+	)[0];
+	let vl = UIELEMENTS.ytvideoelement; // local reference for better code
+
+	/*--------------------- Add Event Listeners to it ---------------------*/
+	/*
+    using the 'timeupdate' event listener instead of 'ended' prevents youtubes event listeners
+    from executing if the video is part of a playlist (mix), because elsewise YT would just play
+    the next video. 
+    ev.stopImmediaPropagration also does not work, as the YT event listener was added
+    first and would not be interrupted.
+    0.5 should be used as a time, as in most browser the timeupdate event trigger als 200 - 300ms,
+    so this will ensure that it will be triggered, even on slower pcs
+    https://stackoverflow.com/questions/9678177/how-often-does-the-timeupdate-event-fire-for-an-html5-video
+    */
+
+	vl.addEventListener("timeupdate", (ev) => {
+		if (vl.currentTime > vl.duration - 0.5) {
+			APPSTATE.loopcount++;
+			UIELEMENTS.loopcounterspan.textContent = `${APPSTATE.loopcount} Times Looped`;
+			if (APPSTATE.loop) {
+				if (APPSTATE.loopmax !== 0) {
+					if (APPSTATE.loopcount >= APPSTATE.loopmax) {
+						APPSTATE.loop = false;
+						loop_reset();
+					} else {
+						vl.currentTime = 0;
+					}
+				} else {
+					vl.currentTime = 0;
+				}
+			} else {
+				loop_reset();
+			}
+		}
+	});
 })();
