@@ -1,18 +1,20 @@
+
 # Youtube Looper Extension
 
-A chrome extension to loop youtube videos inside the browser (on the official youtube webpage).
+<a rel="noreferrer noopener" href="https://addons.mozilla.org/firefox/addon/yt-looper/"><img alt="Firefox Add-ons" src="https://img.shields.io/badge/Firefox-141e24.svg?&style=for-the-badge&logo=firefox-browser"></a>
+
+A browser extension to loop YouTube videos inside the browser (on the official YouTube webpage).
 It's possible to specify how often the video should be looped. Note that the times looped don't
 reset when the max loop count is adjusted.
 
-### __[Install for Firefox](https://addons.mozilla.org/en-US/firefox/addon/yt-looper/)__
+# Chromium-based browsers (Chrome, Edge, Brave, Opera, ...)
 
-# Install in Chromium based browser (Chrome, Edge, Brave, Opera, ...)
+## Chrome Webstore
 
-## Chrome Webstore Link
-
-Will be here when i finish registering it.
+Link will be here when i finish registering it.
 
 ## Install from a local folder
+
 1. Clone the repository with git or download all the files in the repository in any other way (Release Page, Download Button)
 2. Make sure to be on the `chrome` branch (should be default). If you're not, just `git switch chrome`.
 3. Open your browser, go to `chrome://extensions`, enable developer mode.
@@ -21,9 +23,13 @@ Will be here when i finish registering it.
 6. As this repository will get updated, you may need to sync your git repository or download the files
    and load and package the extension again
 
-# Install in Firefox based browsers (Firefox, LibreWolf, ...)
+# Firefox-based browsers (Firefox, LibreWolf, ...)
 
 ## Firefox Addons Store
+
+Install from https://addons.mozilla.org/firefox/addon/yt-looper/.
+
+### FAQ
 
 #### Why does this extension need access to Youtube inside my browser?
 
@@ -33,11 +39,8 @@ It needs to run the code to loop the video inside your Youtube tab.
 
 To detect when a video changes or you click on another video while one is playing it needs to detect the change in the URL.
 
-#### Where can I install it?
+## Install in Firefox Developer Edition or Nightly as an unsigned addon
 
-In the [Firefox Addons Store](https://addons.mozilla.org/en-US/firefox/addon/yt-looper/)
-
-## How to install in Firefox Developer Edition or Nightly as an unsigned addon
 1. Clone the repository with git or download all the files in the repository in any other way (Release Page, Download Button)
 2. Make sure to be on the `firefox` branch (isn't the default). Use `git switch firefox`.
 3. Now the extensions needs to be packaged. All files except the `.git` folder should be zipped.
@@ -55,4 +58,4 @@ In the [Firefox Addons Store](https://addons.mozilla.org/en-US/firefox/addon/yt-
 # Issues and Bug Reporting
 
 If things go wrong, you have feature ideas or youtube changed their UI and the looper is broken,
-just open an issue on Github.
+just open an [issue on Github](https://github.com/Redstonerayy/yt-looper/issues).
