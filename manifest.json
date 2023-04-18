@@ -25,10 +25,6 @@
 			"matches": ["https://www.youtube.com/*"]
 		},
 		{
-			"resources": ["scripts/helpers.js"],
-			"matches": ["https://www.youtube.com/*"]
-		},
-		{
 			"resources": ["images/noloop.svg"],
 			"matches": ["https://www.youtube.com/*"]
 		},
