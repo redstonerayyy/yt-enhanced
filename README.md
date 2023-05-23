@@ -7,7 +7,7 @@ A browser extension to loop YouTube videos inside the browser (on the official Y
 It's possible to specify how often the video should be looped. Note that the times looped don't
 reset when the max loop count is adjusted.
 
-# Chromium-based browsers (Chrome, Edge, Brave, Opera, ...)
+# Chromium-based browsers (Chrome, Edge, Brave, ...)
 
 ## Chrome Webstore
 
