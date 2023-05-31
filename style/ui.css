@@ -24,9 +24,9 @@
 #yt-enhanced-looper > input {
     outline: none;
     border: none;
-    width: 40px;
+    width: 50px;
     height: 20px;
-    border-radius: 5px;
+    border-radius: 3px;
 }
 
 #looper-counter {
@@ -37,6 +37,45 @@
     height: 26px;
     width: 28px;
     cursor: pointer;
+}
+
+/*------------ slider ------------*/
+#start-end-slider {
+    height: 5px;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    position: relative;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    margin: 0px 10px;
+}
+
+#start-slider, #end-slider {
+    width: 14px;
+    height: 14px;
+    position: absolute;
+    border-radius: 50%;
+    background-color: white;
+    cursor: pointer
+}
+
+#start-slider {
+    left: 100%;
+    transform: translateX(-50%);
+}
+
+#end-slider {
+    right: 100%;
+    transform: translateX(50%);
+}
+
+#color-between {
+    height: 100%;
+    width: 50%;
+    position: absolute;
+    left: 10%;
+    background-color: rgb(160, 160, 160);
 }
 
 /*------------ menu ------------*/
