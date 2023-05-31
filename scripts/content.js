@@ -3,29 +3,46 @@
  -------------------------------------------------*/
 
 const APPSTATE = {
+	// loop
 	loopcount: 0,
 	loopmax: 0,
 	loop: false,
 };
 
 const UIELEMENTS = {
+	// yt stuff
 	injecttarget: null,
-	loopmaxinput: null,
-	loopcounterspan: null,
-	loopstateimg: null,
 	ytvideoelement: null,
+	// loop
+	looprepeats: null,
+	loopcounter: null,
+	loopimage: null,
+	// menu
+	clipimage: null,
+	shareimage: null,
+	downloadimage: null,
+	saveimage: null,
 };
 
 const RESOURCES = {
 	htmlurlsrc: null,
 	htmlinjectsrc: null,
-	noloopsvg: null,
-	yesloopsvg: null,
+	imageurls: {},
 };
 
 /* ------------------------------------------------
                     RESSOURCES
- -------------------------------------------------*/
+-------------------------------------------------*/
+
+const IMAGENAMES = [
+	"noloop",
+	"yesloop",
+	"scissor",
+	"share",
+	"download",
+	"save",
+	"plus",
+];
 
 async function xmlgetrequest(url) {
 	return new Promise((resolve, reject) => {
@@ -45,10 +62,13 @@ async function xmlgetrequest(url) {
 
 async function load_resources() {
 	// get resource urls
-	RESOURCES.htmlurlsrc = chrome.runtime.getURL("ui-html/looper.html");
+	RESOURCES.htmlurlsrc = chrome.runtime.getURL("html-ui/ui.html");
 	RESOURCES.htmlinjectsrc = await xmlgetrequest(RESOURCES.htmlurlsrc);
-	RESOURCES.noloopsvg = chrome.runtime.getURL("images/noloop.svg");
-	RESOURCES.yesloopsvg = chrome.runtime.getURL("images/yesloop.svg");
+	for (const image of IMAGENAMES) {
+		RESOURCES.imageurls[image] = chrome.runtime.getURL(
+			`ui-images/${image}.svg`
+		);
+	}
 }
 
 /* ------------------------------------------------
@@ -83,8 +103,12 @@ function waitforelement(queryselector) {
 function create_inject_element() {
 	let controls = document.createElement("div");
 	controls.innerHTML = RESOURCES.htmlinjectsrc;
-	controls.querySelector("#injected-loop-state-image").src =
-		RESOURCES.noloopsvg;
+	controls.querySelector("#looper-image").src = RESOURCES.imageurls["noloop"];
+	controls.querySelector("#menu-clip").src = RESOURCES.imageurls["scissor"];
+	controls.querySelector("#menu-share").src = RESOURCES.imageurls["share"];
+	controls.querySelector("#menu-download").src =
+		RESOURCES.imageurls["download"];
+	controls.querySelector("#menu-save").src = RESOURCES.imageurls["save"];
 	return controls;
 }
 
@@ -92,9 +116,9 @@ function loop_reset() {
 	APPSTATE.loop = false;
 	APPSTATE.loopmax = 0;
 	APPSTATE.loopcount = 0;
-	UIELEMENTS.loopstateimg.src = RESOURCES.noloopsvg;
-	UIELEMENTS.loopcounterspan.textContent = `${0} Times Looped`;
-	UIELEMENTS.loopmaxinput.value = "";
+	UIELEMENTS.loopimage.src = RESOURCES.noloopsvg;
+	UIELEMENTS.loopcounter.textContent = `${0} Times Looped`;
+	UIELEMENTS.looprepeats.value = "";
 }
 
 /* ------------------------------------------------
@@ -109,7 +133,6 @@ function loop_reset() {
 	/*--------------------- Wait for Inject Target Element ---------------------*/
 	console.log("YT Enhanced: Awaiting Injection");
 	UIELEMENTS.injecttarget = (await waitforelement("#above-the-fold"))[0];
-	console.log(UIELEMENTS.injecttarget);
 
 	/*--------------------- Inject Controls ---------------------*/
 	UIELEMENTS.injecttarget.children[
@@ -117,19 +140,20 @@ function loop_reset() {
 	].before(create_inject_element());
 
 	/*--------------------- Grap References ---------------------*/
-	UIELEMENTS.loopstateimg = document.getElementById(
-		"injected-loop-state-image"
-	);
-	UIELEMENTS.loopcounterspan = document.getElementById(
-		"injected-loop-counter"
-	);
-	UIELEMENTS.loopmaxinput = document.getElementById(
-		"injected-loop-maximum-input"
-	);
+	// loop
+	UIELEMENTS.looprepeats = document.getElementById("looper-repeats");
+	UIELEMENTS.loopcounter = document.getElementById("looper-counter");
+	UIELEMENTS.loopimage = document.getElementById("looper-image");
+
+	// menu
+	UIELEMENTS.clipimage = document.getElementById("menu-clip");
+	UIELEMENTS.shareimage = document.getElementById("menu-share");
+	UIELEMENTS.downloadimage = document.getElementById("menu-download");
+	UIELEMENTS.saveimage = document.getElementById("menu-save");
 
 	/*--------------------- Add Event Listeners to Controls ---------------------*/
 	// change loop maximum when input value is changed
-	UIELEMENTS.loopmaxinput.addEventListener("input", (ev) => {
+	UIELEMENTS.looprepeats.addEventListener("input", (ev) => {
 		let value = ev.target.value;
 		try {
 			APPSTATE.loopmax = Number(value);
@@ -139,13 +163,13 @@ function loop_reset() {
 	});
 
 	// toggle loop if the image is clicked
-	UIELEMENTS.loopstateimg.addEventListener("click", () => {
+	UIELEMENTS.loopimage.addEventListener("click", () => {
 		if (!APPSTATE.loop) {
 			APPSTATE.loop = true;
-			UIELEMENTS.loopstateimg.src = RESOURCES.yesloopsvg;
+			UIELEMENTS.loopimage.src = RESOURCES.yesloopsvg;
 		} else {
 			APPSTATE.loop = false;
-			UIELEMENTS.loopstateimg.src = RESOURCES.noloopsvg;
+			UIELEMENTS.loopimage.src = RESOURCES.noloopsvg;
 		}
 	});
 
@@ -181,7 +205,7 @@ function loop_reset() {
 	vl.addEventListener("timeupdate", (ev) => {
 		if (vl.currentTime > vl.duration - 0.5) {
 			APPSTATE.loopcount++;
-			UIELEMENTS.loopcounterspan.textContent = `${APPSTATE.loopcount} Times Looped`;
+			UIELEMENTS.loopcounter.textContent = `${APPSTATE.loopcount} Times Looped`;
 			if (APPSTATE.loop) {
 				if (APPSTATE.loopmax !== 0) {
 					if (APPSTATE.loopcount >= APPSTATE.loopmax) {

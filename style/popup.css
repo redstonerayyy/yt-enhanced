@@ -1,5 +1,12 @@
 body {
-    width: 230px;
+    width: 215px;
     height: 35px;
     font-family: "Open Sans", sans-serif;
+    color: white;
+    background-color: #24283B;
+}
+
+body > a {
+    text-decoration: none;
+    color: #437DF1;
 }
