@@ -45,7 +45,7 @@ async function xmlgetrequest(url) {
 
 async function load_resources() {
 	// get resource urls
-	RESOURCES.htmlurlsrc = chrome.runtime.getURL("resources/looper.html");
+	RESOURCES.htmlurlsrc = chrome.runtime.getURL("ui-html/looper.html");
 	RESOURCES.htmlinjectsrc = await xmlgetrequest(RESOURCES.htmlurlsrc);
 	RESOURCES.noloopsvg = chrome.runtime.getURL("images/noloop.svg");
 	RESOURCES.yesloopsvg = chrome.runtime.getURL("images/yesloop.svg");

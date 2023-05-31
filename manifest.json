@@ -5,7 +5,7 @@
 	"version": "1.0.1",
 	"permissions": ["webNavigation"],
 	"background": {
-		"service_worker": "background.js"
+		"service_worker": "scripts/background.js"
 	},
 	"content_scripts": [
 		{
@@ -16,26 +16,22 @@
 	],
 	"web_accessible_resources": [
 		{
-			"resources": ["resources/looper.html"],
+			"resources": ["ui-html/looper.html"],
 			"matches": ["https://www.youtube.com/*"]
 		},
 		{
-			"resources": ["images/noloop.svg"],
-			"matches": ["https://www.youtube.com/*"]
-		},
-		{
-			"resources": ["images/yesloop.svg"],
+			"resources": ["ui-images/*"],
 			"matches": ["https://www.youtube.com/*"]
 		}
 	],
 	"action": {
-		"default_popup": "popup/default_popup.html",
-		"default_icon": "images/looper.png"
+		"default_popup": "ui-html/popup.html",
+		"default_icon": "icons/rounded-128.png"
 	},
 	"icons": {
-		"16": "images/icon-16.png",
-		"32": "images/icon-32.png",
-		"64": "images/icon-64.png",
-		"128": "images/icon-128.png"
+		"16": "icons/rounded-16.png",
+		"32": "icons/rounded-32.png",
+		"64": "icons/rounded-64.png",
+		"128": "icons/rounded-128.png"
 	}
 }
