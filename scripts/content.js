@@ -166,10 +166,10 @@ function loop_reset() {
 	UIELEMENTS.loopimage.addEventListener("click", () => {
 		if (!APPSTATE.loop) {
 			APPSTATE.loop = true;
-			UIELEMENTS.loopimage.src = RESOURCES.yesloopsvg;
+			UIELEMENTS.loopimage.src = RESOURCES.imageurls["yesloop"];
 		} else {
 			APPSTATE.loop = false;
-			UIELEMENTS.loopimage.src = RESOURCES.noloopsvg;
+			UIELEMENTS.loopimage.src = RESOURCES.imageurls["noloop"];
 		}
 	});
 
