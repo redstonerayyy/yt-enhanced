@@ -3,6 +3,12 @@
  -------------------------------------------------*/
 
 const APPSTATE = {
+	// loop range
+	loopstart: 0,
+	loopend: null,
+	videolength: null,
+	leftdown: false,
+	rightdown: false,
 	// loop
 	loopcount: 0,
 	loopmax: 0,
@@ -13,6 +19,13 @@ const UIELEMENTS = {
 	// yt stuff
 	injecttarget: null,
 	ytvideoelement: null,
+	// loop range slider
+	loopstart: null,
+	loopslider: null,
+	loopssliderstart: null,
+	loopsliderbetween: null,
+	loopssliderend: null,
+	loopend: null,
 	// loop
 	looprepeats: null,
 	loopcounter: null,
@@ -82,13 +95,10 @@ function waitforelement(queryselector) {
 		let nodes = document.querySelectorAll(queryselector);
 		if (nodes.length) return resolve(nodes);
 
-		let timer;
-
 		const observer = new MutationObserver(() => {
 			let nodes = document.querySelectorAll(queryselector);
 			if (nodes.length) {
 				observer.disconnect();
-				clearTimeout(timer);
 				return resolve(nodes);
 			}
 		});
@@ -116,7 +126,9 @@ function loop_reset() {
 	APPSTATE.loop = false;
 	APPSTATE.loopmax = 0;
 	APPSTATE.loopcount = 0;
-	UIELEMENTS.loopimage.src = RESOURCES.noloopsvg;
+	APPSTATE.loopstart = 0;
+	APPSTATE.loopend = APPSTATE.videolength;
+	UIELEMENTS.loopimage.src = RESOURCES.imageurls["noloop"];
 	UIELEMENTS.loopcounter.textContent = `${0} Times Looped`;
 	UIELEMENTS.looprepeats.value = "";
 }
@@ -139,19 +151,93 @@ function loop_reset() {
 		UIELEMENTS.injecttarget.children.length - 1
 	].before(create_inject_element());
 
+	/* ------------------------------------------------
+                        SAVE
+     -------------------------------------------------*/
 	/*--------------------- Grap References ---------------------*/
+	UIELEMENTS.saveimage = document.getElementById("menu-save");
+
+	/* ------------------------------------------------
+                        DOWNLOAD
+     -------------------------------------------------*/
+	/*--------------------- Grap References ---------------------*/
+	UIELEMENTS.downloadimage = document.getElementById("menu-download");
+
+	/* ------------------------------------------------
+                        SHARE
+     -------------------------------------------------*/
+	/*--------------------- Grap References ---------------------*/
+	UIELEMENTS.shareimage = document.getElementById("menu-share");
+
+	/* ------------------------------------------------
+                        CLIP
+     -------------------------------------------------*/
+	/*--------------------- Grap References ---------------------*/
+	UIELEMENTS.clipimage = document.getElementById("menu-clip");
+
+	/* ------------------------------------------------
+                        LOOPING
+    -------------------------------------------------*/
+	/*--------------------- Grap References ---------------------*/
+	// loop range slider
+	UIELEMENTS.loopstart = document.getElementById("looper-start");
+	UIELEMENTS.loopslider = document.getElementById("start-end-slider");
+	UIELEMENTS.loopssliderstart = document.getElementById("start-slider");
+	UIELEMENTS.loopsliderbetween = document.getElementById("color-between");
+	UIELEMENTS.loopssliderend = document.getElementById("end-slider");
+	UIELEMENTS.loopend = document.getElementById("looper-end");
 	// loop
 	UIELEMENTS.looprepeats = document.getElementById("looper-repeats");
 	UIELEMENTS.loopcounter = document.getElementById("looper-counter");
 	UIELEMENTS.loopimage = document.getElementById("looper-image");
 
-	// menu
-	UIELEMENTS.clipimage = document.getElementById("menu-clip");
-	UIELEMENTS.shareimage = document.getElementById("menu-share");
-	UIELEMENTS.downloadimage = document.getElementById("menu-download");
-	UIELEMENTS.saveimage = document.getElementById("menu-save");
-
 	/*--------------------- Add Event Listeners to Controls ---------------------*/
+	/*------------ event listeners for the range select ------------*/
+	UIELEMENTS.loopssliderstart.addEventListener("mousedown", (ev) => {
+		APPSTATE.leftdown = true;
+	});
+	UIELEMENTS.loopssliderend.addEventListener("mousedown", (ev) => {
+		APPSTATE.rightdown = true;
+	});
+	document.addEventListener("mouseup", (ev) => {
+		APPSTATE.leftdown = false;
+		APPSTATE.rightdown = false;
+	});
+
+	/*------------ change sliders on mousemove ------------*/
+	document.addEventListener("mousemove", (ev) => {
+		let mousex = ev.x;
+
+		let sliderxleft = UIELEMENTS.loopslider.getBoundingClientRect().left;
+		let sliderxright =
+			sliderxleft + UIELEMENTS.loopslider.getBoundingClientRect().width;
+
+		let newthumbx = Math.min(Math.max(mousex, sliderxleft), sliderxright);
+		let fraction = (newthumbx - sliderxleft) / (sliderxright - sliderxleft);
+		let percentage = fraction * 100;
+
+		if (APPSTATE.leftdown) {
+			if (APPSTATE.videolength * fraction <= APPSTATE.loopend)
+				APPSTATE.loopstart = APPSTATE.videolength * fraction;
+			UIELEMENTS.loopssliderstart.style.left = `${percentage.toFixed(
+				1
+			)}%`;
+			UIELEMENTS.loopsliderbetween.style.left = `${percentage.toFixed(
+				1
+			)}%`;
+		} else if (APPSTATE.rightdown) {
+			if (APPSTATE.videolength * fraction >= APPSTATE.loopstart)
+				APPSTATE.loopend = APPSTATE.videolength * fraction;
+			UIELEMENTS.loopssliderend.style.right = `${
+				100 - percentage.toFixed(1)
+			}%`;
+			UIELEMENTS.loopsliderbetween.style.right = `${
+				100 - percentage.toFixed(1)
+			}%`;
+		}
+	});
+
+	/*------------ event listeners for loop button ------------*/
 	// change loop maximum when input value is changed
 	UIELEMENTS.looprepeats.addEventListener("input", (ev) => {
 		let value = ev.target.value;
@@ -170,9 +256,11 @@ function loop_reset() {
 		} else {
 			APPSTATE.loop = false;
 			UIELEMENTS.loopimage.src = RESOURCES.imageurls["noloop"];
+			loop_reset();
 		}
 	});
 
+	/*------------ webnavigation event ------------*/
 	// reset loop when video changes, listen to navigate events in background.js
 	chrome.runtime.onMessage.addListener((request) => {
 		if (request.navigation) {
@@ -190,6 +278,10 @@ function loop_reset() {
 	)[0];
 	let vl = UIELEMENTS.ytvideoelement; // local reference for better code
 
+	/*------------ set video length ------------*/
+	APPSTATE.videolength = vl.duration;
+	APPSTATE.loopend = vl.duration;
+
 	/*--------------------- Add Event Listeners to it ---------------------*/
 	/*
     using the 'timeupdate' event listener instead of 'ended' prevents youtubes event listeners
@@ -203,22 +295,24 @@ function loop_reset() {
     */
 
 	vl.addEventListener("timeupdate", (ev) => {
-		if (vl.currentTime > vl.duration - 0.5) {
-			APPSTATE.loopcount++;
-			UIELEMENTS.loopcounter.textContent = `${APPSTATE.loopcount} Times Looped`;
-			if (APPSTATE.loop) {
+		if (APPSTATE.loop) {
+			if (vl.currentTime > APPSTATE.loopend - 0.5) {
+				console.log("larger");
+				APPSTATE.loopcount++;
+				UIELEMENTS.loopcounter.textContent = `${APPSTATE.loopcount} Times Looped`;
 				if (APPSTATE.loopmax !== 0) {
 					if (APPSTATE.loopcount >= APPSTATE.loopmax) {
 						APPSTATE.loop = false;
 						loop_reset();
 					} else {
-						vl.currentTime = 0;
+						vl.currentTime = APPSTATE.loopstart;
 					}
 				} else {
-					vl.currentTime = 0;
+					vl.currentTime = APPSTATE.loopstart;
 				}
-			} else {
-				loop_reset();
+			} else if (vl.currentTime < APPSTATE.loopstart) {
+				console.log("smaller");
+				vl.currentTime = APPSTATE.loopstart;
 			}
 		}
 	});

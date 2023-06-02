@@ -9,9 +9,9 @@
 	},
 	"content_scripts": [
 		{
+			"matches": ["https://www.youtube.com/*"],
 			"js": ["scripts/content.js"],
-			"css": ["style/ui.css"],
-			"matches": ["https://www.youtube.com/*"]
+			"css": ["style/ui.css"]
 		}
 	],
 	"web_accessible_resources": [

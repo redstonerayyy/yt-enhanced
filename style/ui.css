@@ -1,93 +1,95 @@
 /*------------ general ------------*/
 #yt-enhanced-ui {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
-    position: relative;
-    font-family: "Open Sans", sans-serif;
-    margin-top: 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 60px;
+	position: relative;
+	font-family: "Open Sans", sans-serif;
+	margin-top: 10px;
+	user-select: none;
 }
 
 /*------------ looper ------------*/
 #yt-enhanced-looper {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex-grow: 1
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	flex-grow: 1;
 }
 
 #yt-enhanced-looper > * {
-    margin: 0px 10px;
+	margin: 0px 10px;
 }
 
 #yt-enhanced-looper > input {
-    outline: none;
-    border: none;
-    width: 50px;
-    height: 20px;
-    border-radius: 3px;
+	outline: none;
+	border: none;
+	width: 50px;
+	height: 20px;
+	border-radius: 3px;
 }
 
 #looper-counter {
-    font-size: 20px;
+	font-size: 20px;
 }
 
 #looper-image {
-    height: 26px;
-    width: 28px;
-    cursor: pointer;
+	height: 26px;
+	width: 28px;
+	cursor: pointer;
 }
 
 /*------------ slider ------------*/
 #start-end-slider {
-    height: 5px;
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    position: relative;
-    border-top: 1px solid white;
-    border-bottom: 1px solid white;
-    margin: 0px 10px;
+	height: 5px;
+	display: flex;
+	align-items: center;
+	flex-grow: 1;
+	position: relative;
+	border: 1px solid white;
+	border-radius: 10px;
+	margin: 0px 10px;
 }
 
-#start-slider, #end-slider {
-    width: 14px;
-    height: 14px;
-    position: absolute;
-    border-radius: 50%;
-    background-color: white;
-    cursor: pointer
+#start-slider,
+#end-slider {
+	width: 14px;
+	height: 14px;
+	position: absolute;
+	border-radius: 50%;
+	background-color: white;
+	cursor: pointer;
 }
 
 #start-slider {
-    left: 100%;
-    transform: translateX(-50%);
+	left: 0%;
+	transform: translateX(-50%);
 }
 
 #end-slider {
-    right: 100%;
-    transform: translateX(50%);
+	right: 0%;
+	transform: translateX(50%);
 }
 
 #color-between {
-    height: 100%;
-    width: 50%;
-    position: absolute;
-    left: 10%;
-    background-color: rgb(160, 160, 160);
+	height: 100%;
+	position: absolute;
+	left: 0%;
+	right: 0%;
+	background-color: rgb(160, 160, 160);
 }
 
 /*------------ menu ------------*/
 #yt-enhanced-menu {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
 }
 
 #yt-enhanced-menu > img {
-    height: 26px;
-    width: 28px;
-    margin: 0px 10px;
-    cursor: pointer;
+	height: 26px;
+	width: 28px;
+	margin: 0px 10px;
+	cursor: pointer;
 }
