@@ -97,24 +97,6 @@ function loop_reset() {
 	UIELEMENTS.saveimage = document.getElementById("menu-save");
 
 	/* ------------------------------------------------
-                        DOWNLOAD
-     -------------------------------------------------*/
-	/*--------------------- Grap References ---------------------*/
-	UIELEMENTS.downloadimage = document.getElementById("menu-download");
-
-	// /* ------------------------------------------------
-	//                     SHARE
-	//  -------------------------------------------------*/
-	// /*--------------------- Grap References ---------------------*/
-	// UIELEMENTS.shareimage = document.getElementById("menu-share");
-
-	// /* ------------------------------------------------
-	//                     CLIP
-	//  -------------------------------------------------*/
-	// /*--------------------- Grap References ---------------------*/
-	// UIELEMENTS.clipimage = document.getElementById("menu-clip");
-
-	/* ------------------------------------------------
                         LOOPING
     -------------------------------------------------*/
 	/*--------------------- Grap References ---------------------*/

@@ -54,10 +54,6 @@ function create_inject_element() {
 	let controls = document.createElement("div");
 	controls.innerHTML = RESOURCES.htmlinjectsrc;
 	controls.querySelector("#looper-image").src = RESOURCES.imageurls["noloop"];
-	controls.querySelector("#menu-clip").src = RESOURCES.imageurls["scissor"];
-	controls.querySelector("#menu-share").src = RESOURCES.imageurls["share"];
-	controls.querySelector("#menu-download").src =
-		RESOURCES.imageurls["download"];
 	controls.querySelector("#menu-save").src = RESOURCES.imageurls["save"];
 	return controls;
 }
