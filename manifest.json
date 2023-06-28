@@ -5,12 +5,12 @@
 	"version": "1.0.1",
 	"permissions": ["webNavigation"],
 	"background": {
-		"service_worker": "scripts/background.js"
+		"service_worker": "scripts/background/background.js"
 	},
 	"content_scripts": [
 		{
 			"matches": ["https://www.youtube.com/*"],
-			"js": ["scripts/content.js", "scripts/test.js"],
+			"js": ["scripts/lib.js", "scripts/main.js"],
 			"css": ["style/ui.css"]
 		}
 	],

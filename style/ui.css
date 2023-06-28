@@ -25,9 +25,10 @@
 #yt-enhanced-looper > input {
 	outline: none;
 	border: none;
-	width: 50px;
+	width: 60px;
 	height: 20px;
 	border-radius: 3px;
+	text-align: right;
 }
 
 #looper-counter {

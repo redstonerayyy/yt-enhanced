@@ -31,8 +31,8 @@ const UIELEMENTS = {
 	loopcounter: null,
 	loopimage: null,
 	// menu
-	clipimage: null,
-	shareimage: null,
+	// clipimage: null,
+	// shareimage: null,
 	downloadimage: null,
 	saveimage: null,
 };
@@ -87,6 +87,10 @@ function loop_reset() {
 	].before(create_inject_element());
 
 	/* ------------------------------------------------
+                        LOADING EXTENSION FUNCTIONS
+     -------------------------------------------------*/
+
+	/* ------------------------------------------------
                         SAVE
      -------------------------------------------------*/
 	/*--------------------- Grap References ---------------------*/
@@ -98,17 +102,17 @@ function loop_reset() {
 	/*--------------------- Grap References ---------------------*/
 	UIELEMENTS.downloadimage = document.getElementById("menu-download");
 
-	/* ------------------------------------------------
-                        SHARE
-     -------------------------------------------------*/
-	/*--------------------- Grap References ---------------------*/
-	UIELEMENTS.shareimage = document.getElementById("menu-share");
+	// /* ------------------------------------------------
+	//                     SHARE
+	//  -------------------------------------------------*/
+	// /*--------------------- Grap References ---------------------*/
+	// UIELEMENTS.shareimage = document.getElementById("menu-share");
 
-	/* ------------------------------------------------
-                        CLIP
-     -------------------------------------------------*/
-	/*--------------------- Grap References ---------------------*/
-	UIELEMENTS.clipimage = document.getElementById("menu-clip");
+	// /* ------------------------------------------------
+	//                     CLIP
+	//  -------------------------------------------------*/
+	// /*--------------------- Grap References ---------------------*/
+	// UIELEMENTS.clipimage = document.getElementById("menu-clip");
 
 	/* ------------------------------------------------
                         LOOPING
@@ -152,8 +156,10 @@ function loop_reset() {
 		let percentage = fraction * 100;
 
 		if (APPSTATE.leftdown) {
-			if (APPSTATE.videolength * fraction <= APPSTATE.loopend)
+			if (APPSTATE.videolength * fraction <= APPSTATE.loopend) {
 				APPSTATE.loopstart = APPSTATE.videolength * fraction;
+				UIELEMENTS.loopstart.value = format_time(APPSTATE.loopstart);
+			}
 			UIELEMENTS.loopssliderstart.style.left = `${percentage.toFixed(
 				1
 			)}%`;
@@ -161,8 +167,10 @@ function loop_reset() {
 				1
 			)}%`;
 		} else if (APPSTATE.rightdown) {
-			if (APPSTATE.videolength * fraction >= APPSTATE.loopstart)
+			if (APPSTATE.videolength * fraction >= APPSTATE.loopstart) {
 				APPSTATE.loopend = APPSTATE.videolength * fraction;
+				UIELEMENTS.loopend.value = format_time(APPSTATE.loopend);
+			}
 			UIELEMENTS.loopssliderend.style.right = `${
 				100 - percentage.toFixed(1)
 			}%`;
@@ -232,7 +240,6 @@ function loop_reset() {
 	vl.addEventListener("timeupdate", (ev) => {
 		if (APPSTATE.loop) {
 			if (vl.currentTime > APPSTATE.loopend - 0.5) {
-				console.log("larger");
 				APPSTATE.loopcount++;
 				UIELEMENTS.loopcounter.textContent = `${APPSTATE.loopcount} Times Looped`;
 				if (APPSTATE.loopmax !== 0) {
@@ -246,7 +253,6 @@ function loop_reset() {
 					vl.currentTime = APPSTATE.loopstart;
 				}
 			} else if (vl.currentTime < APPSTATE.loopstart) {
-				console.log("smaller");
 				vl.currentTime = APPSTATE.loopstart;
 			}
 		}

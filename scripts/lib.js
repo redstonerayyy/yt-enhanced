@@ -61,3 +61,20 @@ function create_inject_element() {
 	controls.querySelector("#menu-save").src = RESOURCES.imageurls["save"];
 	return controls;
 }
+
+function format_time(time) {
+	const minute = 60;
+	const hour = 60 * 60;
+
+	hours = Math.floor(time / hour);
+	time = time % hour;
+
+	minutes = Math.floor(time / minute);
+	time = time % minute;
+
+	seconds = time;
+
+	return `${hours.toFixed(0).padStart(2, "0")}:${minutes
+		.toFixed(0)
+		.padStart(2, "0")}:${seconds.toFixed(0).padStart(2, "0")}`;
+}
