@@ -10,7 +10,12 @@
 	"content_scripts": [
 		{
 			"matches": ["https://www.youtube.com/*"],
-			"js": ["scripts/lib.js", "scripts/main.js"],
+			"js": [
+				"scripts/lib.js",
+				"scripts/preload.js",
+				"scripts/main.js",
+				"scripts/loop.js"
+			],
 			"css": ["style/ui.css"]
 		}
 	],

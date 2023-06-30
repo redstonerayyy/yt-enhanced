@@ -1,4 +1,10 @@
-async function xmlgetrequest(url) {
+// library file with functions
+
+/* ------------------------------------------------
+                    RESOURCE LOADING
+ -------------------------------------------------*/
+
+async function xml_get_request(url) {
 	return new Promise((resolve, reject) => {
 		let xhr = new XMLHttpRequest();
 		xhr.open("GET", url);
@@ -14,32 +20,22 @@ async function xmlgetrequest(url) {
 	});
 }
 
-async function load_resources() {
-	// get resource urls
-	RESOURCES.htmlurlsrc = chrome.runtime.getURL("html-ui/ui.html");
-	RESOURCES.htmlinjectsrc = await xmlgetrequest(RESOURCES.htmlurlsrc);
-	for (const image of IMAGENAMES) {
-		RESOURCES.imageurls[image] = chrome.runtime.getURL(
-			`ui-images/${image}.svg`
-		);
-	}
-}
 /* ------------------------------------------------
                     DOM MANIPUlATION
  -------------------------------------------------*/
 
 // https://stackoverflow.com/questions/34863788/how-to-check-if-an-element-has-been-loaded-on-a-page-before-running-a-script
 // makes it possible to wait for the load of a DOM element
-function waitforelement(queryselector) {
+async function wait_for_element(queryselector) {
 	return new Promise((resolve, reject) => {
 		let nodes = document.querySelectorAll(queryselector);
 		if (nodes.length) return resolve(nodes);
 
 		const observer = new MutationObserver(() => {
-			let nodes = document.querySelectorAll(queryselector);
-			if (nodes.length) {
+			let node = document.querySelector(queryselector);
+			if (node !== null) {
 				observer.disconnect();
-				return resolve(nodes);
+				return resolve(node);
 			}
 		});
 
@@ -50,27 +46,22 @@ function waitforelement(queryselector) {
 	});
 }
 
-function create_inject_element() {
-	let controls = document.createElement("div");
-	controls.innerHTML = RESOURCES.htmlinjectsrc;
-	controls.querySelector("#looper-image").src = RESOURCES.imageurls["noloop"];
-	controls.querySelector("#menu-save").src = RESOURCES.imageurls["save"];
-	return controls;
-}
+/* ------------------------------------------------
+                    DATA CONVERSION
+ -------------------------------------------------*/
 
+/*------------ format a time in seconds into a human readable format ------------*/
 function format_time(time) {
 	const minute = 60;
 	const hour = 60 * 60;
 
-	hours = Math.floor(time / hour);
+	hours = Math.floor(time / hour).toFixed(0).padStart(2, "0");
 	time = time % hour;
 
-	minutes = Math.floor(time / minute);
+	minutes = Math.floor(time / minute).toFixed(0).padStart(2, "0");
 	time = time % minute;
 
-	seconds = time;
+	seconds = time.toFixed(0).padStart(2, "0");
 
-	return `${hours.toFixed(0).padStart(2, "0")}:${minutes
-		.toFixed(0)
-		.padStart(2, "0")}:${seconds.toFixed(0).padStart(2, "0")}`;
+	return `${hours.}:${minutes}:${seconds}`;
 }
