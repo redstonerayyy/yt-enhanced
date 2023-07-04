@@ -7,5 +7,4 @@
 (async () => {
 	await preload();
 	await loop();
-	await save();
 })();

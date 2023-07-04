@@ -13,8 +13,8 @@
 			"js": [
 				"scripts/lib.js",
 				"scripts/preload.js",
-				"scripts/main.js",
-				"scripts/loop.js"
+				"scripts/loop.js",
+				"scripts/main.js"
 			],
 			"css": ["style/ui.css"]
 		}

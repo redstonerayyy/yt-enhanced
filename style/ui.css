@@ -10,37 +10,6 @@
 	user-select: none;
 }
 
-/*------------ looper ------------*/
-#yt-enhanced-looper {
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	flex-grow: 1;
-}
-
-#yt-enhanced-looper > * {
-	margin: 0px 10px;
-}
-
-#yt-enhanced-looper > input {
-	outline: none;
-	border: none;
-	width: 60px;
-	height: 20px;
-	border-radius: 3px;
-	text-align: right;
-}
-
-#looper-counter {
-	font-size: 20px;
-}
-
-#looper-image {
-	height: 26px;
-	width: 28px;
-	cursor: pointer;
-}
-
 /*------------ slider ------------*/
 #start-end-slider {
 	height: 5px;
@@ -79,6 +48,37 @@
 	left: 0%;
 	right: 0%;
 	background-color: rgb(160, 160, 160);
+}
+
+/*------------ looper ------------*/
+#yt-enhanced-loop {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	flex-grow: 1;
+}
+
+#yt-enhanced-loop > * {
+	margin: 0px 10px;
+}
+
+#yt-enhanced-loop > input {
+	outline: none;
+	border: none;
+	width: 60px;
+	height: 20px;
+	border-radius: 3px;
+	text-align: right;
+}
+
+#loop-counter {
+	font-size: 20px;
+}
+
+#loop-button {
+	height: 26px;
+	width: 28px;
+	cursor: pointer;
 }
 
 /*------------ menu ------------*/

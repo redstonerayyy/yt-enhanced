@@ -28,8 +28,8 @@ async function xml_get_request(url) {
 // makes it possible to wait for the load of a DOM element
 async function wait_for_element(queryselector) {
 	return new Promise((resolve, reject) => {
-		let nodes = document.querySelectorAll(queryselector);
-		if (nodes.length) return resolve(nodes);
+		let node = document.querySelector(queryselector);
+		if (node !== null) return resolve(node);
 
 		const observer = new MutationObserver(() => {
 			let node = document.querySelector(queryselector);
@@ -55,13 +55,17 @@ function format_time(time) {
 	const minute = 60;
 	const hour = 60 * 60;
 
-	hours = Math.floor(time / hour).toFixed(0).padStart(2, "0");
+	hours = Math.floor(time / hour)
+		.toFixed(0)
+		.padStart(2, "0");
 	time = time % hour;
 
-	minutes = Math.floor(time / minute).toFixed(0).padStart(2, "0");
+	minutes = Math.floor(time / minute)
+		.toFixed(0)
+		.padStart(2, "0");
 	time = time % minute;
 
 	seconds = time.toFixed(0).padStart(2, "0");
 
-	return `${hours.}:${minutes}:${seconds}`;
+	return `${hours}:${minutes}:${seconds}`;
 }
