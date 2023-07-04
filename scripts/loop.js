@@ -134,7 +134,6 @@ async function loop() {
 	YT.video.addEventListener("timeupdate", (ev) => {
 		if (LOOPSTATE.islooping) {
 			if (YT.video.currentTime > LOOPSTATE.endtime - 0.5) {
-				console.log("a");
 				LOOPSTATE.count++;
 				UI.loop.counter.textContent = `${LOOPSTATE.count} Times Looped`;
 				if (
@@ -147,7 +146,6 @@ async function loop() {
 					YT.video.currentTime = LOOPSTATE.starttime;
 				}
 			} else if (YT.video.currentTime < LOOPSTATE.starttime) {
-				console.log("b");
 				YT.video.currentTime = LOOPSTATE.starttime;
 			}
 		}
