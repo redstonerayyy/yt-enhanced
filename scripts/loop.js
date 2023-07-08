@@ -28,6 +28,7 @@ async function loop() {
 	});
 
 	UI.slider.end.addEventListener("mousedown", () => {
+		console.log(LOOPSTATE);
 		UISTATE.slider.rightdown = true;
 	});
 
@@ -52,10 +53,7 @@ async function loop() {
 
 		// calculate the time for each change and change the ui
 		// set new start and end time
-		if (
-			UISTATE.slider.leftdown &&
-			LOOPSTATE.videolength * fraction <= LOOPSTATE.endtime
-		) {
+		if (UISTATE.slider.leftdown) {
 			LOOPSTATE.starttime = LOOPSTATE.videolength * fraction;
 
 			UI.slider.stime.value = format_time(LOOPSTATE.starttime);
@@ -63,10 +61,7 @@ async function loop() {
 			let perc = percentage.toFixed(1);
 			UI.slider.start.style.left = `${perc}%`;
 			UI.slider.between.style.left = `${perc}%`;
-		} else if (
-			UISTATE.slider.rightdown &&
-			LOOPSTATE.videolength * fraction >= LOOPSTATE.starttime
-		) {
+		} else if (UISTATE.slider.rightdown) {
 			LOOPSTATE.endtime = LOOPSTATE.videolength * fraction;
 
 			UI.slider.etime.value = format_time(LOOPSTATE.endtime);
@@ -100,15 +95,6 @@ async function loop() {
 		}
 	});
 
-	/*------------ webnavigation event ------------*/
-	// reset loop when video changes, listen to navigate events in background.js
-	chrome.runtime.onMessage.addListener((request) => {
-		if (request.navigation) {
-			LOOPSTATE.islooping = false;
-			reset_loop_state();
-		}
-	});
-
 	/*--------------------- Wait for YT Video Player ---------------------*/
 	console.log("YT Enhanced: Awaiting Videoplayer");
 	YT.video = await wait_for_element(
@@ -116,9 +102,32 @@ async function loop() {
 	);
 
 	/*------------ set video length ------------*/
-	LOOPSTATE.videolength = YT.video.duration;
 	LOOPSTATE.starttime = 0;
-	LOOPSTATE.endtime = YT.video.duration;
+
+	YT.video.addEventListener("loadedmetadata", () => {
+		LOOPSTATE.endtime = YT.video.duration;
+		LOOPSTATE.videolength = YT.video.duration;
+	});
+
+	/*------------ webnavigation event ------------*/
+	// reset loop when video changes, listen to navigate events in background.js
+	chrome.runtime.onMessage.addListener(async (request) => {
+		if (request.navigation) {
+			console.log("YT Enhanced: Resetting State after Navigation");
+			reset_loop_state();
+
+			console.log("YT Enhanced: Awaiting Videoplayer after Navigation");
+			YT.video = await wait_for_element(
+				"#movie_player > div.html5-video-container > video"
+			);
+
+			YT.video.addEventListener("loadedmetadata", () => {
+				/*------------ set video length ------------*/
+				LOOPSTATE.endtime = YT.video.duration;
+				LOOPSTATE.videolength = YT.video.duration;
+			});
+		}
+	});
 
 	/*--------------------- Add Event Listeners to it ---------------------*/
 	/*
