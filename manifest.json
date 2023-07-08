@@ -3,7 +3,7 @@
 	"name": "Youtube Video Looper",
 	"description": "Loop a video on the Youtube Website",
 	"version": "1.0.1",
-	"permissions": ["webNavigation", "storage"],
+	"permissions": ["webNavigation", "storage", "downloads"],
 	"background": {
 		"service_worker": "scripts/background/background.js"
 	},

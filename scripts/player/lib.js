@@ -40,3 +40,22 @@ async function addtostore(db, objectstore, object) {
 		resolve();
 	});
 }
+
+/*------------ query by index ------------*/
+async function querybyindex(db, objectstore, searchindex, search) {
+	return new Promise((resolve, reject) => {
+		const transaction = db.transaction(objectstore, "readonly");
+		const store = transaction.objectStore(objectstore);
+		const index = store.index(searchindex);
+
+		let request = index.getAll(search);
+
+		request.onsuccess = () => {
+			if (request.result !== undefined) {
+				resolve(request.result[0]);
+			} else {
+				reject(null);
+			}
+		};
+	});
+}

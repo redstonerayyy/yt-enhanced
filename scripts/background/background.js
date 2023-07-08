@@ -8,11 +8,10 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
 });
 
 /*------------ receive save message ------------*/
-chrome.runtime.onMessage.addListener(async (request) => {
+chrome.runtime.onMessage.addListener(async (request, sender) => {
 	/*------------ query if there is a player tab ------------*/
 	const result = await chrome.storage.local.get(["playerid"]);
 	let targetid;
-	console.log(result);
 	if (result.playerid !== undefined) {
 		targetid = result.playerid;
 	} else {

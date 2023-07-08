@@ -5,6 +5,17 @@
 -------------------------------------------------*/
 
 async function save() {
+	/*------------ set to checkmark if already downloaded ------------*/
+	const vid = new URLSearchParams(window.location.search).get("v");
+	const res = await chrome.runtime.sendMessage({
+		type: "checkvid",
+		videoid: vid,
+	});
+
+	if (res.issaved) {
+		UI.save.button.src = RES.images["save"];
+	}
+
 	/*------------ send videoinfo on click ------------*/
 	UI.save.button.addEventListener("click", () => {
 		/*------------ video info ------------*/
@@ -18,7 +29,7 @@ async function save() {
 		UI.save.button.src = RES.images["check"];
 
 		/*------------ send to background script ------------*/
-		chrome.runtime.sendMessage(videoinfo);
+		chrome.runtime.sendMessage({ type: "videosave", ...videoinfo });
 	});
 
 	/*------------ reset ui on video change ------------*/
