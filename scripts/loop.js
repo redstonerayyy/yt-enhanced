@@ -28,7 +28,6 @@ async function loop() {
 	});
 
 	UI.slider.end.addEventListener("mousedown", () => {
-		console.log(LOOPSTATE);
 		UISTATE.slider.rightdown = true;
 	});
 
@@ -104,13 +103,16 @@ async function loop() {
 	/*------------ set video length ------------*/
 	LOOPSTATE.starttime = 0;
 
-	YT.video.addEventListener("loadedmetadata", () => {
+	setTimeout(() => {
 		LOOPSTATE.endtime = YT.video.duration;
 		LOOPSTATE.videolength = YT.video.duration;
-	});
+	}, 1000);
 
 	/*------------ webnavigation event ------------*/
 	// reset loop when video changes, listen to navigate events in background.js
+	// use loadedmetadata event, which works only when navigating on youtube
+	// to a new video. reloading a tab does somehow (?) not trigger this event
+	// therefore above a setTimeout is used
 	chrome.runtime.onMessage.addListener(async (request) => {
 		if (request.navigation) {
 			console.log("YT Enhanced: Resetting State after Navigation");

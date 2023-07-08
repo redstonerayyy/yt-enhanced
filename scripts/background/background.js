@@ -6,3 +6,8 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
 		} catch (e) {}
 	}
 });
+
+/*------------ receive save message ------------*/
+chrome.runtime.onMessage.addListener((request) => {
+	console.log(request);
+});

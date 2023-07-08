@@ -99,7 +99,7 @@ async function preload() {
 	UI.loop.counter = document.querySelector("#loop-counter");
 	UI.loop.button = document.querySelector("#loop-button");
 
-	UI.save.button = document.querySelector("#menu-save");
+	UI.save.button = document.querySelector("#yt-enhanced-menu > #save-button");
 
 	/*------------ Grap reference to video last ------------*/
 	// it may needs to load
