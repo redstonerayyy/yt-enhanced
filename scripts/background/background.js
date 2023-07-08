@@ -8,6 +8,27 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
 });
 
 /*------------ receive save message ------------*/
-chrome.runtime.onMessage.addListener((request) => {
-	console.log(request);
+chrome.runtime.onMessage.addListener(async (request) => {
+	/*------------ query if there is a player tab ------------*/
+	const result = await chrome.storage.local.get(["playerid"]);
+	let targetid;
+	console.log(result);
+	if (result.playerid !== undefined) {
+		targetid = result.playerid;
+	} else {
+		const tabid = (
+			await chrome.tabs.create({
+				url: "html-ui/player.html",
+				active: false,
+			})
+		).id;
+		chrome.storage.local.set({ playerid: tabid });
+		targetid = tabid;
+	}
+
+	/*------------ send message to tab ------------*/
+	// timeout because tab creation takes time
+	setTimeout(() => {
+		chrome.tabs.sendMessage(targetid, request);
+	}, 2000);
 });

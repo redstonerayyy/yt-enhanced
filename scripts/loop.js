@@ -115,7 +115,7 @@ async function loop() {
 	// therefore above a setTimeout is used
 	chrome.runtime.onMessage.addListener(async (request) => {
 		if (request.navigation) {
-			console.log("YT Enhanced: Resetting State after Navigation");
+			console.log("YT Enhanced: Resetting Loop State after Navigation");
 			reset_loop_state();
 
 			console.log("YT Enhanced: Awaiting Videoplayer after Navigation");

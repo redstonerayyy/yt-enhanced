@@ -69,7 +69,7 @@ async function preload() {
 	);
 
 	// get image urls
-	const images = ["noloop", "yesloop", "save"];
+	const images = ["noloop", "yesloop", "save", "check"];
 	for (const image of images) {
 		RES.images[image] = chrome.runtime.getURL(`ui-images/${image}.svg`);
 	}
