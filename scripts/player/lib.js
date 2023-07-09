@@ -90,6 +90,12 @@ function rendervideos(target, videos) {
 	for (const video of videos) {
 		let el = document.createElement("div");
 		el.textContent = video.title;
+		el.className = "video";
+		el.addEventListener("click", () => {
+			chrome.tabs.create({
+				url: `https://www.youtube.com/watch?v=${video.videoid}`,
+			});
+		});
 		target.appendChild(el);
 	}
 }

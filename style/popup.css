@@ -1,12 +1,17 @@
 body {
-    width: 215px;
-    height: 35px;
-    font-family: "Open Sans", sans-serif;
-    color: white;
-    background-color: #24283B;
+	width: 215px;
+	height: 55px;
+	font-family: "Open Sans", sans-serif;
+	color: white;
+	background-color: #24283b;
 }
 
 body > a {
-    text-decoration: none;
-    color: #437DF1;
+	text-decoration: none;
+	color: #437df1;
+}
+
+.open-button {
+	margin: 5px 0px;
+	cursor: pointer;
 }

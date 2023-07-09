@@ -16,8 +16,6 @@ body {
 /*------------ container ------------*/
 .main-container {
 	display: flex;
-	justify-content: center;
-	align-items: center;
 	width: 100%;
 	height: 100%;
 	position: relative;
@@ -25,9 +23,9 @@ body {
 
 /*------------ export songs ------------*/
 .export-songs-button {
-	border: 2px solid rgb(63, 63, 63);
+	border: 1px solid rgb(63, 63, 63);
 	border-radius: 5px;
-	font-size: 20px;
+	font-size: 14px;
 	margin: 20px;
 	padding: 4px;
 	cursor: pointer;
@@ -43,15 +41,23 @@ body {
 
 /*------------ video listing ------------*/
 .video-container {
+	margin: 20px;
 	display: flex;
 	justify-content: center;
-	align-items: center;
+	align-items: flex-start;
 	width: 50%;
 	flex-direction: column;
 }
 
 .video {
+	padding: 4px 8px;
 	display: flex;
-	justify-content: center;
-	align-items: center;
+	font-size: 14px;
+	width: 100%;
+	cursor: pointer;
+	border-radius: 3px;
+}
+
+.video:hover {
+	background: rgb(193, 205, 219);
 }

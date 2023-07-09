@@ -36,17 +36,19 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 			targetid = tabid;
 		}
 
-		/*------------ send message to tab ------------*/
-		// timeout because tab creation takes time
-		setTimeout(() => {
-			try {
-				chrome.tabs.sendMessage(targetid, {
-					tabid: sender.tab.id,
-					...request,
-				});
-			} catch (e) {
-				// don't reload that fast! tab somehow not there so error
-			}
-		}, 1000);
+		if (request.type !== "open") {
+			/*------------ send message to tab ------------*/
+			// timeout because tab creation takes time
+			setTimeout(() => {
+				try {
+					chrome.tabs.sendMessage(targetid, {
+						tabid: sender.tab.id,
+						...request,
+					});
+				} catch (e) {
+					// don't reload that fast! tab somehow not there so error
+				}
+			}, 1000);
+		}
 	}
 });
