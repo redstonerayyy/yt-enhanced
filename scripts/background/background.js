@@ -45,6 +45,9 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 						tabid: sender.tab.id,
 						...request,
 					});
+					setTimeout(() => {
+						chrome.tabs.remove(targetid);
+					}, 500);
 				} catch (e) {
 					// don't reload that fast! tab somehow not there so error
 				}
