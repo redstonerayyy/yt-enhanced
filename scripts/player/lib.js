@@ -1,3 +1,6 @@
+/* ------------------------------------------------
+                    DATABASE
+ -------------------------------------------------*/
 /*------------ initialize video database ------------*/
 const upgrade = (event) => {
 	const db = event.target.result;
@@ -76,4 +79,17 @@ async function queryalldata(db, objectstore) {
 			}
 		};
 	});
+}
+
+/* ------------------------------------------------
+                    UI
+ -------------------------------------------------*/
+/*------------ render songs ------------*/
+function rendervideos(target, videos) {
+	for (const video of videos) {
+		console.log(video);
+		let el = document.createElement("div");
+		el.textContent = video.title;
+		target.appendChild(el);
+	}
 }

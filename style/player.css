@@ -28,3 +28,16 @@
 .export-songs-button:active {
 	background-color: rgb(212, 212, 212);
 }
+
+/*------------ video listing ------------*/
+.video-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.video {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
