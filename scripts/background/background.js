@@ -39,10 +39,17 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 		/*------------ send message to tab ------------*/
 		// timeout because tab creation takes time
 		setTimeout(() => {
-			chrome.tabs.sendMessage(targetid, {
-				tabid: sender.tab.id,
-				...request,
-			});
-		}, 2000);
+			try {
+				chrome.tabs.sendMessage(targetid, {
+					tabid: sender.tab.id,
+					...request,
+				});
+				// setTimeout(() => {
+				// 	chrome.tabs.remove(targetid);
+				// }, 500);
+			} catch (e) {
+				// don't reload that fast, tab somehow not there
+			}
+		}, 1000);
 	}
 });

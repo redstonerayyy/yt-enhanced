@@ -19,3 +19,10 @@ exportbutton.addEventListener("click", async () => {
 		filename: `yt_enhanced_export_${today}.json`,
 	});
 });
+
+(async () => {
+	/*------------ render stuff ------------*/
+	const db = await opendatabase("yt-enhanced", 1, upgrade);
+	const videos = await queryalldata(db, "videos");
+	rendervideos(videocontainer, videos);
+})();

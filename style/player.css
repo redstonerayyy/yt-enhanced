@@ -7,11 +7,20 @@
 	margin: 0px;
 }
 
+* html,
+body {
+	width: 100%;
+	height: 100%;
+}
+
 /*------------ container ------------*/
 .main-container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	width: 100%;
+	height: 100%;
+	position: relative;
 }
 
 /*------------ export songs ------------*/
@@ -23,6 +32,9 @@
 	padding: 2px;
 	cursor: pointer;
 	user-select: none;
+	position: absolute;
+	top: 10px;
+	right: 10px;
 }
 
 .export-songs-button:active {
@@ -34,6 +46,8 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	width: 50%;
+	flex-direction: column;
 }
 
 .video {

@@ -86,8 +86,8 @@ async function queryalldata(db, objectstore) {
  -------------------------------------------------*/
 /*------------ render songs ------------*/
 function rendervideos(target, videos) {
+	target.innerHTML = "";
 	for (const video of videos) {
-		console.log(video);
 		let el = document.createElement("div");
 		el.textContent = video.title;
 		target.appendChild(el);
