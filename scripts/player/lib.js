@@ -52,7 +52,7 @@ async function querybyindex(db, objectstore, searchindex, search) {
 
 		request.onsuccess = () => {
 			if (request.result !== undefined) {
-				resolve(request.result[0]);
+				resolve(request.result);
 			} else {
 				reject(null);
 			}

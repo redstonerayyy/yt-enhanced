@@ -9,25 +9,42 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
 
 /*------------ receive save message ------------*/
 chrome.runtime.onMessage.addListener(async (request, sender) => {
-	/*------------ query if there is a player tab ------------*/
-	const result = await chrome.storage.local.get(["playerid"]);
-	let targetid;
-	if (result.playerid !== undefined) {
-		targetid = result.playerid;
+	/*------------ send return from player tabs to content scripts ------------*/
+	if (request.type === "savedreturn") {
+		console.log(request, sender);
+		await chrome.tabs.sendMessage(request.tabid, { ...request });
 	} else {
-		const tabid = (
-			await chrome.tabs.create({
-				url: "html-ui/player.html",
-				active: false,
-			})
-		).id;
-		chrome.storage.local.set({ playerid: tabid });
-		targetid = tabid;
-	}
+		/*------------ query if there is a player tab ------------*/
+		const result = await chrome.storage.local.get(["playerid"]);
 
-	/*------------ send message to tab ------------*/
-	// timeout because tab creation takes time
-	setTimeout(() => {
-		chrome.tabs.sendMessage(targetid, request);
-	}, 2000);
+		let targetid;
+
+		if (result.playerid !== undefined) {
+			try {
+				let tab = await chrome.tabs.get(result.playerid);
+				targetid = result.playerid;
+			} catch (e) {}
+		}
+
+		if (targetid === undefined) {
+			const tabid = (
+				await chrome.tabs.create({
+					url: "html-ui/player.html",
+					active: false,
+				})
+			).id;
+			chrome.storage.local.set({ playerid: tabid });
+			targetid = tabid;
+		}
+
+		/*------------ send message to tab ------------*/
+		// timeout because tab creation takes time
+		setTimeout(() => {
+			console.log("sending now");
+			chrome.tabs.sendMessage(targetid, {
+				tabid: sender.tab.id,
+				...request,
+			});
+		}, 2000);
+	}
 });

@@ -5,16 +5,13 @@
 -------------------------------------------------*/
 
 async function save() {
-	/*------------ set to checkmark if already downloaded ------------*/
+	/*------------ send message to see if already downloaded ------------*/
 	const vid = new URLSearchParams(window.location.search).get("v");
-	const res = await chrome.runtime.sendMessage({
-		type: "checkvid",
-		videoid: vid,
-	});
-
-	if (res.issaved) {
-		UI.save.button.src = RES.images["save"];
-	}
+	console.log("load");
+	// chrome.runtime.sendMessage({
+	// 	type: "checkvid",
+	// 	videoid: vid,
+	// });
 
 	/*------------ send videoinfo on click ------------*/
 	UI.save.button.addEventListener("click", () => {
@@ -33,10 +30,18 @@ async function save() {
 	});
 
 	/*------------ reset ui on video change ------------*/
-	chrome.runtime.onMessage.addListener(async (request) => {
+	chrome.runtime.onMessage.addListener((request) => {
 		if (request.navigation) {
-			console.log("YT Enhanced: Resetting Save State after Navigation");
+			console.log("nav");
 			UI.save.button.src = RES.images["save"];
+
+			const vid = new URLSearchParams(window.location.search).get("v");
+			chrome.runtime.sendMessage({
+				type: "checkvid",
+				videoid: vid,
+			});
+		} else if (request.issaved) {
+			UI.save.button.src = RES.images["check"];
 		}
 	});
 }
