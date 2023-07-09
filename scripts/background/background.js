@@ -11,7 +11,6 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
 chrome.runtime.onMessage.addListener(async (request, sender) => {
 	/*------------ send return from player tabs to content scripts ------------*/
 	if (request.type === "savedreturn") {
-		console.log(request, sender);
 		await chrome.tabs.sendMessage(request.tabid, { ...request });
 	} else {
 		/*------------ query if there is a player tab ------------*/
@@ -40,7 +39,6 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 		/*------------ send message to tab ------------*/
 		// timeout because tab creation takes time
 		setTimeout(() => {
-			console.log("sending now");
 			chrome.tabs.sendMessage(targetid, {
 				tabid: sender.tab.id,
 				...request,

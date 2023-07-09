@@ -11,7 +11,6 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 	// check for tabid so only proxied request from background
 	// get processed
 	else if (request.type === "checkvid" && request.tabid) {
-		console.log(request, sender);
 		const db = await opendatabase("yt-enhanced", 1, upgrade);
 		const exists = await querybyindex(
 			db,
@@ -20,7 +19,6 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 			request.videoid
 		);
 
-		console.log("before db");
 		chrome.runtime.sendMessage({
 			type: "savedreturn",
 			tabid: request.tabid,

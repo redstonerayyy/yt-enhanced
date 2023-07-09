@@ -5,14 +5,6 @@
 -------------------------------------------------*/
 
 async function save() {
-	/*------------ send message to see if already downloaded ------------*/
-	const vid = new URLSearchParams(window.location.search).get("v");
-	console.log("load");
-	// chrome.runtime.sendMessage({
-	// 	type: "checkvid",
-	// 	videoid: vid,
-	// });
-
 	/*------------ send videoinfo on click ------------*/
 	UI.save.button.addEventListener("click", () => {
 		/*------------ video info ------------*/
@@ -32,9 +24,9 @@ async function save() {
 	/*------------ reset ui on video change ------------*/
 	chrome.runtime.onMessage.addListener((request) => {
 		if (request.navigation) {
-			console.log("nav");
 			UI.save.button.src = RES.images["save"];
 
+			/*------------ send message to see if already downloaded ------------*/
 			const vid = new URLSearchParams(window.location.search).get("v");
 			chrome.runtime.sendMessage({
 				type: "checkvid",

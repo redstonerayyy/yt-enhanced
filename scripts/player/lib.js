@@ -59,3 +59,21 @@ async function querybyindex(db, objectstore, searchindex, search) {
 		};
 	});
 }
+
+/*------------ query all data of store ------------*/
+async function queryalldata(db, objectstore) {
+	return new Promise((resolve, reject) => {
+		const transaction = db.transaction(objectstore, "readonly");
+		const store = transaction.objectStore(objectstore);
+
+		let request = store.getAll();
+
+		request.onsuccess = () => {
+			if (request.result !== undefined) {
+				resolve(request.result);
+			} else {
+				reject([]);
+			}
+		};
+	});
+}
