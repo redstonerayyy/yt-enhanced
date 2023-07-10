@@ -12,6 +12,14 @@ const upgrade = (event) => {
 	// indices for searching
 	videostore.createIndex("title", "title", { unique: false });
 	videostore.createIndex("videoid", "videoid", { unique: true });
+
+	const tagstore = db.createObjectStore("tags", {
+		autoIncrement: true,
+	});
+
+	// indices for searching
+	tagstore.createIndex("tag", "tag", { unique: false });
+	tagstore.createIndex("videoid", "videoid", { unique: false });
 };
 
 /*------------ create/open database ------------*/
