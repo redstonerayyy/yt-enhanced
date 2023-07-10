@@ -9,49 +9,131 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
 
 /*------------ receive save message ------------*/
 chrome.runtime.onMessage.addListener(async (request, sender) => {
+	const test = await chrome.storage.local.get(["playlistinfo"]);
+	console.log(request, test);
 	/*------------ send return from player tabs to content scripts ------------*/
-	if (request.type === "savedreturn") {
-		await chrome.tabs.sendMessage(request.tabid, { ...request });
-	} else {
-		/*------------ query if there is a player tab ------------*/
-		const result = await chrome.storage.local.get(["playerid"]);
-
-		let targetid;
-
-		if (result.playerid !== undefined) {
-			try {
-				let tab = await chrome.tabs.get(result.playerid);
-				targetid = result.playerid;
-			} catch (e) {}
+	if (request.target === "injected") {
+		if (request.type === "savedreturn") {
+			await chrome.tabs.sendMessage(request.tabid, { ...request });
 		}
+	} else if (request.target === "playlist") {
+		/*------------ query if there is a player tab ------------*/
+		const result = await chrome.storage.local.get(["playlistinfo"]);
 
+		let targetid = undefined;
+
+		/*------------ check if tab already exists ------------*/
+		try {
+			if (result.playlistinfo.tabid !== undefined) {
+				// produces error if id is outdated
+				let tab = await chrome.tabs.get(result.playlistinfo.tabid);
+				targetid = result.playlistinfo.tabid;
+			}
+		} catch (e) {}
+
+		/*------------ does not exist, create it ------------*/
 		if (targetid === undefined) {
 			const tabid = (
 				await chrome.tabs.create({
-					url: "html-ui/player.html",
+					url: "html-ui/playlist.html",
 					active: false,
 				})
 			).id;
-			chrome.storage.local.set({ playerid: tabid });
+
+			chrome.storage.local.set({
+				playlistinfo: { tabid: tabid, treason: "saveorcheck" },
+			});
+
 			targetid = tabid;
 		}
 
-		if (request.type !== "open") {
-			/*------------ send message to tab ------------*/
-			// timeout because tab creation takes time
-			setTimeout(() => {
-				try {
-					chrome.tabs.sendMessage(targetid, {
-						tabid: sender.tab.id,
-						...request,
-					});
-					setTimeout(() => {
+		/*------------ send message to tab ------------*/
+		// timeout because tab creation takes time
+		setTimeout(() => {
+			try {
+				chrome.tabs.sendMessage(targetid, {
+					tabid: sender.tab.id,
+					...request,
+				});
+
+				setTimeout(async () => {
+					/*------------ don't remove if opened by user ------------*/
+					const result = await chrome.storage.local.get([
+						"playlistinfo",
+					]);
+
+					if (result.playlistinfo.treason === "saveorcheck") {
 						chrome.tabs.remove(targetid);
-					}, 500);
-				} catch (e) {
-					// don't reload that fast! tab somehow not there so error
+					}
+				}, 500);
+			} catch (e) {
+				// don't reload that fast! tab somehow not there so error
+			}
+		}, 1000);
+	} else if (request.target === "background") {
+		/*------------ open tab so user can see videos ------------*/
+		if (request.type === "open") {
+			/*------------ query if there is a player tab ------------*/
+			const result = await chrome.storage.local.get(["playlistinfo"]);
+
+			let tabid = undefined;
+
+			/*------------ check if tab already exists ------------*/
+			try {
+				if (result.playlistinfo.tabid !== undefined) {
+					// produces error if id is outdated
+					let tab = await chrome.tabs.get(result.playlistinfo.tabid);
+
+					/*------------ set reason so it does not close ------------*/
+					await chrome.storage.local.set({
+						playlistinfo: {
+							tabid: result.playlistinfo.tabid,
+							treason: "useropen",
+						},
+					});
+
+					tabid = result.playlistinfo.tabid;
+				} else {
+					/*------------ create because does not exist ------------*/
+					const id = (
+						await chrome.tabs.create({
+							url: "html-ui/playlist.html",
+							active: false,
+						})
+					).id;
+
+					tabid = id;
 				}
-			}, 1000);
+			} catch (e) {
+				/*------------ create because does not exist ------------*/
+				const id = (
+					await chrome.tabs.create({
+						url: "html-ui/playlist.html",
+						active: false,
+					})
+				).id;
+
+				tabid = id;
+			}
+
+			/*------------ group tab ------------*/
+			const group = await chrome.tabs.group({
+				tabIds: tabid,
+			});
+
+			await chrome.storage.local.set({
+				playlistinfo: {
+					tabid: tabid,
+					treason: "test",
+					groupid: group,
+				},
+			});
+
+			/*------------ update the group ------------*/
+			await chrome.tabGroups.update(group, {
+				title: "ye",
+				color: "purple",
+			});
 		}
 	}
 });

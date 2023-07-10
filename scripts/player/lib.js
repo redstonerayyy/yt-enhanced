@@ -91,10 +91,31 @@ function rendervideos(target, videos) {
 		let el = document.createElement("div");
 		el.textContent = video.title;
 		el.className = "video";
-		el.addEventListener("click", () => {
-			chrome.tabs.create({
-				url: `https://www.youtube.com/watch?v=${video.videoid}`,
-			});
+		el.addEventListener("click", async () => {
+			/*------------ create tab ------------*/
+			const tabid = (
+				await chrome.tabs.create({
+					url: `https://www.youtube.com/watch?v=${video.videoid}`,
+				})
+			).id;
+
+			/*------------ and at to the ye group ------------*/
+			const result = await chrome.storage.local.get(["playlistinfo"]);
+
+			console.log(result);
+
+			try {
+				if (result.playlistinfo.groupid !== undefined) {
+					const group = await chrome.tabs.group({
+						groupId: result.playlistinfo.groupid,
+						tabIds: tabid,
+					});
+
+					console.log(group);
+				}
+			} catch (e) {
+				console.log(e);
+			}
 		});
 		target.appendChild(el);
 	}

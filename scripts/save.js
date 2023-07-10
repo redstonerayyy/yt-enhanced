@@ -10,6 +10,7 @@ async function save() {
 	const vid = new URLSearchParams(window.location.search).get("v");
 	chrome.runtime.sendMessage({
 		type: "checkvid",
+		target: "playlist",
 		videoid: vid,
 	});
 
@@ -26,23 +27,32 @@ async function save() {
 		UI.save.button.src = RES.images["check"];
 
 		/*------------ send to background script ------------*/
-		chrome.runtime.sendMessage({ type: "videosave", ...videoinfo });
+		chrome.runtime.sendMessage({
+			type: "videosave",
+			target: "playlist",
+			...videoinfo,
+		});
 	});
 
 	/*------------ reset ui on video change ------------*/
 	chrome.runtime.onMessage.addListener((request) => {
-		if (request.navigation) {
-			UI.save.button.src = RES.images["save"];
+		if (request.target === "injected") {
+			if (request.navigation) {
+				UI.save.button.src = RES.images["save"];
 
-			/*------------ send message to see if already downloaded ------------*/
-			// execute when navigating inside youtube
-			const vid = new URLSearchParams(window.location.search).get("v");
-			chrome.runtime.sendMessage({
-				type: "checkvid",
-				videoid: vid,
-			});
-		} else if (request.issaved) {
-			UI.save.button.src = RES.images["check"];
+				/*------------ send message to see if already downloaded ------------*/
+				// execute when navigating inside youtube
+				const vid = new URLSearchParams(window.location.search).get(
+					"v"
+				);
+				chrome.runtime.sendMessage({
+					type: "checkvid",
+					target: "playlist",
+					videoid: vid,
+				});
+			} else if (request.issaved) {
+				UI.save.button.src = RES.images["check"];
+			}
 		}
 	});
 }
