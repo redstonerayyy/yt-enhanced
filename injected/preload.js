@@ -65,7 +65,7 @@ async function preload() {
 
 	// load html source
 	let htmlurlsrc = await xml_get_request(
-		chrome.runtime.getURL("html-ui/ui.html")
+		chrome.runtime.getURL("injected/ui.html")
 	);
 
 	// get image urls

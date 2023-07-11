@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 		if (targetid === undefined) {
 			const tabid = (
 				await chrome.tabs.create({
-					url: "html-ui/playlist.html",
+					url: "playlist/playlist.html",
 					active: false,
 				})
 			).id;
@@ -101,7 +101,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 					/*------------ create because does not exist ------------*/
 					const id = (
 						await chrome.tabs.create({
-							url: "html-ui/playlist.html",
+							url: "playlist/playlist.html",
 							active: false,
 						})
 					).id;
@@ -112,7 +112,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 				/*------------ create because does not exist ------------*/
 				const id = (
 					await chrome.tabs.create({
-						url: "html-ui/playlist.html",
+						url: "playlist/playlist.html",
 						active: false,
 					})
 				).id;
