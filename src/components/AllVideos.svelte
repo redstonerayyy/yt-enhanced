@@ -7,38 +7,38 @@
 	import Video from "./Video.svelte";
 	import { videos } from "../store/store.js";
 
-	let videosready = queryvideos();
-	let vids;
+	/*------------ prepare reactive state ------------*/
+	let videosvalue = [];
 
 	videos.subscribe((value) => {
-		vids = value;
+		videosvalue = value;
 	});
-
-	async function queryvideos() {
-		const db = await lib.opendatabase("yt-enhanced", 1, lib.upgrade);
-		return new Promise((resolve) => {
-			videos.update(async () => {
-				await lib.queryalldata(db, "videos");
-				resolve(true);
-			});
-		});
-	}
 
 	// for virtual list
 	let start;
 	let end;
+
+	/*------------ populate videos state ------------*/
+	async function queryvideos() {
+		const db = await lib.opendatabase("yt-enhanced", 1, lib.upgrade);
+		const v = await lib.queryalldata(db, "videos");
+		videos.set(v);
+	}
+
+	queryvideos();
 </script>
 
 <div class="video-container">
-	{#await videosready}
-		<p>Loading</p>
-	{:then videosready}
-		{#if true}
-			<VirtualList items={vids} bind:start bind:end let:item>
-				<Video {...item} />
-			</VirtualList>
-		{/if}
-	{/await}
+	{#if videosvalue.length}
+		<VirtualList items={videosvalue} bind:start bind:end let:item>
+			<Video {...item} />
+		</VirtualList>
+	{:else}
+		<p>
+			Go to <a target="_blank" href="https://www.youtube.com/">Youtube</a>
+			to add some videos!
+		</p>
+	{/if}
 </div>
 
 <style>

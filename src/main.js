@@ -8,6 +8,10 @@ const app = new App({
 
 export default app;
 
+/* ------------------------------------------------
+                    COMPONENT INDEPENDENT CODE
+ -------------------------------------------------*/
+
 /*------------ add video on event ------------*/
 chrome.runtime.onMessage.addListener(async (request, sender) => {
 	if (request.target === "playlist") {
@@ -20,10 +24,9 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 			const db = await lib.opendatabase("yt-enhanced", 1, lib.upgrade);
 			await lib.addtostore(db, "videos", request);
 
-			// rerender videos
-			videos.update(async () => {
-				await lib.queryalldata(db, "videos");
-			});
+			// rerender videos e.g. update state
+			const v = await lib.queryalldata(db, "videos");
+			videos.set(v);
 		}
 		// check if video is already saved
 		// check for tabid so only proxied request from background
