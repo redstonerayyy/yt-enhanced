@@ -5,26 +5,23 @@
 	import * as lib from "../lib.js";
 	import VirtualList from "@sveltejs/svelte-virtual-list";
 	import Video from "./Video.svelte";
+	import { videos } from "../store/store.js";
 
-	let videos = queryvideos();
-	// let videos = [
-	// 	{ title: "delain", videoid: "abc" },
-	// 	{ title: "delain", videoid: "abc" },
-	// 	{ title: "delain", videoid: "abc" },
-	// 	{ title: "delain", videoid: "abc" },
-	// ];
+	let videosready = queryvideos();
+	let vids;
 
-	console.log(videos);
-
-	function updatevideos() {
-		videos = queryvideos;
-	}
+	videos.subscribe((value) => {
+		vids = value;
+	});
 
 	async function queryvideos() {
 		const db = await lib.opendatabase("yt-enhanced", 1, lib.upgrade);
-		const videos = await lib.queryalldata(db, "videos");
-		console.log(videos);
-		return videos;
+		return new Promise((resolve) => {
+			videos.update(async () => {
+				await lib.queryalldata(db, "videos");
+				resolve(true);
+			});
+		});
 	}
 
 	// for virtual list
@@ -33,11 +30,11 @@
 </script>
 
 <div class="video-container">
-	{#await videos}
+	{#await videosready}
 		<p>Loading</p>
-	{:then videos}
-		{#if videos}
-			<VirtualList items={videos} bind:start bind:end let:item>
+	{:then videosready}
+		{#if true}
+			<VirtualList items={vids} bind:start bind:end let:item>
 				<Video {...item} />
 			</VirtualList>
 		{/if}
