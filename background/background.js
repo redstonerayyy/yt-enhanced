@@ -14,7 +14,6 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
 /*------------ receive save message ------------*/
 chrome.runtime.onMessage.addListener(async (request, sender) => {
 	const test = await chrome.storage.local.get(["playlistinfo"]);
-	console.log(request, test);
 	/*------------ send return from player tabs to content scripts ------------*/
 	if (request.target === "injected") {
 		if (request.type === "savedreturn") {
@@ -39,7 +38,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 		if (targetid === undefined) {
 			const tabid = (
 				await chrome.tabs.create({
-					url: "playlist/playlist.html",
+					url: "playlist/index.html",
 					active: false,
 				})
 			).id;
@@ -101,7 +100,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 					/*------------ create because does not exist ------------*/
 					const id = (
 						await chrome.tabs.create({
-							url: "playlist/playlist.html",
+							url: "playlist/index.html",
 							active: false,
 						})
 					).id;
@@ -112,7 +111,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 				/*------------ create because does not exist ------------*/
 				const id = (
 					await chrome.tabs.create({
-						url: "playlist/playlist.html",
+						url: "playlist/index.html",
 						active: false,
 					})
 				).id;
