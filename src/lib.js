@@ -2,7 +2,7 @@
                     DATABASE
  -------------------------------------------------*/
 /*------------ initialize video database ------------*/
-const upgrade = (event) => {
+export function upgrade(event) {
 	const db = event.target.result;
 
 	const videostore = db.createObjectStore("videos", {
@@ -20,10 +20,10 @@ const upgrade = (event) => {
 	// indices for searching
 	tagstore.createIndex("tag", "tag", { unique: false });
 	tagstore.createIndex("videoid", "videoid", { unique: false });
-};
+}
 
 /*------------ create/open database ------------*/
-async function opendatabase(name, version, upgrade) {
+export async function opendatabase(name, version, upgrade) {
 	return new Promise((resolve, reject) => {
 		let db;
 
@@ -43,7 +43,7 @@ async function opendatabase(name, version, upgrade) {
 }
 
 /*------------ add entry to database ------------*/
-async function addtostore(db, objectstore, object) {
+export async function addtostore(db, objectstore, object) {
 	return new Promise((resolve) => {
 		const transaction = db.transaction(objectstore, "readwrite");
 		const store = transaction.objectStore(objectstore);
@@ -53,7 +53,7 @@ async function addtostore(db, objectstore, object) {
 }
 
 /*------------ query by index ------------*/
-async function querybyindex(db, objectstore, searchindex, search) {
+export async function querybyindex(db, objectstore, searchindex, search) {
 	return new Promise((resolve, reject) => {
 		const transaction = db.transaction(objectstore, "readonly");
 		const store = transaction.objectStore(objectstore);
@@ -72,7 +72,7 @@ async function querybyindex(db, objectstore, searchindex, search) {
 }
 
 /*------------ query all data of store ------------*/
-async function queryalldata(db, objectstore) {
+export async function queryalldata(db, objectstore) {
 	return new Promise((resolve, reject) => {
 		const transaction = db.transaction(objectstore, "readonly");
 		const store = transaction.objectStore(objectstore);
