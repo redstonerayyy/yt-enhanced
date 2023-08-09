@@ -3,14 +3,9 @@
 	"name": "Youtube Enhanced",
 	"description": "For a better Youtube experience!",
 	"version": "1.0.1",
-	"permissions": ["webNavigation", "storage", "downloads"],
-	"browser_specific_settings": {
-		"gecko": {
-			"id": "redstonerayy@github.com"
-		}
-	},
+	"permissions": ["webNavigation", "storage", "downloads", "tabGroups"],
 	"background": {
-		"scripts": ["background/background.js"]
+		"service_worker": "background/background.js"
 	},
 	"content_scripts": [
 		{
