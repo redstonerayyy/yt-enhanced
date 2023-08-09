@@ -1,0 +1,96 @@
+/*------------ general ------------*/
+#yt-enhanced-ui {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 60px;
+	position: relative;
+	font-family: "Open Sans", sans-serif;
+	margin-top: 10px;
+	user-select: none;
+}
+
+/*------------ slider ------------*/
+#start-end-slider {
+	height: 5px;
+	display: flex;
+	align-items: center;
+	flex-grow: 1;
+	position: relative;
+	border: 1px solid white;
+	border-radius: 10px;
+	margin: 0px 10px;
+}
+
+#start-slider,
+#end-slider {
+	width: 14px;
+	height: 14px;
+	position: absolute;
+	border-radius: 50%;
+	background-color: white;
+	cursor: pointer;
+}
+
+#start-slider {
+	left: 0%;
+	transform: translateX(-50%);
+}
+
+#end-slider {
+	right: 0%;
+	transform: translateX(50%);
+}
+
+#color-between {
+	height: 100%;
+	position: absolute;
+	left: 0%;
+	right: 0%;
+	background-color: rgb(160, 160, 160);
+}
+
+/*------------ looper ------------*/
+#yt-enhanced-loop {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	flex-grow: 1;
+}
+
+#yt-enhanced-loop > * {
+	margin: 0px 10px;
+}
+
+#yt-enhanced-loop > input {
+	outline: none;
+	border: none;
+	width: 60px;
+	height: 20px;
+	border-radius: 3px;
+	text-align: right;
+}
+
+#loop-counter {
+	font-size: 20px;
+}
+
+#loop-button {
+	height: 26px;
+	width: 28px;
+	cursor: pointer;
+}
+
+/*------------ menu ------------*/
+#yt-enhanced-menu {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+#yt-enhanced-menu > #save-button {
+	height: 26px;
+	width: 28px;
+	margin: 0px 10px;
+	cursor: pointer;
+}
