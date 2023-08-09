@@ -7,12 +7,6 @@
 (async () => {
 	const result = await chrome.storage.local.get(["uioption"]);
 
-	if (result.uioption === undefined) {
-		await chrome.storage.local.set({
-			uioption: { option: "full" },
-		});
-	}
-
 	if (result.uioption.option == "full") {
 		await preload();
 		await loop();

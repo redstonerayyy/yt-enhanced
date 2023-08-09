@@ -32,12 +32,7 @@
 
 	async function loaduioption() {
 		const result = await chrome.storage.local.get(["uioption"]);
-
-		if (result.uioption !== undefined) {
-			selected = result.uioption.option;
-		} else {
-			selected = "full";
-		}
+		selected = result.uioption.option;
 
 		return "";
 	}
