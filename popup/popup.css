@@ -1,0 +1,23 @@
+body {
+	width: 212px;
+	height: 80px;
+	font-family: "Open Sans", sans-serif;
+	color: white;
+	background-color: #24283b;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	user-select: none;
+}
+
+body > a {
+	text-decoration: none;
+	color: #437df1;
+}
+
+.open-button {
+	font-size: 20px;
+	margin: 5px 0px;
+	cursor: pointer;
+	font-weight: bold;
+}
