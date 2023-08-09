@@ -1,9 +1,12 @@
 body {
-	width: 215px;
-	height: 55px;
+	width: 212px;
+	height: 80px;
 	font-family: "Open Sans", sans-serif;
 	color: white;
 	background-color: #24283b;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
 
 body > a {
@@ -12,6 +15,8 @@ body > a {
 }
 
 .open-button {
+	font-size: 20px;
 	margin: 5px 0px;
 	cursor: pointer;
+	font-weight: bold;
 }
