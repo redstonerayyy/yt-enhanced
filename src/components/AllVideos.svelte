@@ -43,8 +43,8 @@
 
 <style>
 	.video-container {
-		height: calc(100vh - 57px);
 		padding-left: 10px;
 		padding-bottom: 5px;
+		flex-grow: 1;
 	}
 </style>
