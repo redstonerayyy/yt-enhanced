@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 			await chrome.tabs.sendMessage(request.tabid, { ...request });
 		}
 	} else if (request.target === "playlist") {
-		/*------------ query if there is a player tab ------------*/
+		/*------------ query if there is a playlist tab ------------*/
 		const result = await chrome.storage.local.get(["playlistinfo"]);
 
 		let targetid = undefined;
