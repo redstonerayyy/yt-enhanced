@@ -4,10 +4,6 @@
 	"description": "For a better Youtube experience!",
 	"version": "1.0.1",
 	"permissions": ["webNavigation", "storage", "downloads", "tabGroups"],
-	"name": "Youtube Video Looper",
-	"description": "Loop a video on the Youtube Website",
-	"version": "1.0.1",
-	"permissions": ["webNavigation"],
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "redstonerayy@github.com"
