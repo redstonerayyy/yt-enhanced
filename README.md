@@ -58,3 +58,7 @@ To detect when a video changes or you click on another video while one is playin
 
 If things go wrong, you have feature ideas or youtube changed their UI and the looper is broken,
 just open an [issue on Github](https://github.com/Redstonerayy/yt-looper/issues).
+
+# Todo
+
+-   add more precise time to export

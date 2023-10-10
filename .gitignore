@@ -1,2 +1,4 @@
 /node_modules
 /playlist/*
+/scripts/*
+!/scripts/download.py
