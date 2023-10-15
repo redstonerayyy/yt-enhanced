@@ -13,7 +13,6 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
 
 /*------------ receive save message ------------*/
 chrome.runtime.onMessage.addListener(async (request, sender) => {
-	const test = await chrome.storage.local.get(["playlistinfo"]);
 	/*------------ send return from player tabs to content scripts ------------*/
 	if (request.target === "injected") {
 		if (request.type === "savedreturn") {
